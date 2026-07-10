@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block title %}Cyber Defend GPT Sentinel{% endblock %}
+{% block content %}
+<div class="cda-gradient-hero py-5">
+  <div class="container py-4">
+    <span class="badge text-bg-info mb-2">{{ stage_label }}</span>
+    <h1 class="display-6 fw-bold">Cyber Defend GPT Sentinel</h1>
+    <p class="lead text-secondary">An AI-Powered SOC Analyst Assistant for Modern Security Operations</p>
+    <div class="d-flex flex-wrap gap-2 mt-3">
+      {% include "includes/waitlist_button.html" with css_class="btn-cda-primary" %}
+      <a href="{% url 'leads:demo_request' %}" class="btn btn-outline-light">Request Demo</a>
+      <a href="{% url 'leads:pilot_request' %}" class="btn btn-outline-light">Register Pilot Interest</a>
+      <a href="{% url 'leads:contact' %}" class="btn btn-outline-light">Contact Team</a>
+    </div>
+  </div>
+</div>
+
+<div class="container py-5">
+  <h2 class="h4 mb-3">Features</h2>
+  <div class="row g-3 mb-5">
+    {% for feature in features %}
+    <div class="col-md-4">
+      <div class="cda-surface p-3 h-100">{{ feature }}</div>
+    </div>
+    {% endfor %}
+  </div>
+
+  <h2 class="h4 mb-3">How It Works</h2>
+  <ol class="text-secondary">
+    {% for step in how_it_works %}
+    <li>{{ step }}</li>
+    {% endfor %}
+  </ol>
+
+  <h2 class="h4 mt-5 mb-3">Who It's For</h2>
+  <div class="d-flex flex-wrap gap-2">
+    {% for user in intended_users %}
+    <span class="badge text-bg-secondary">{{ user }}</span>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}

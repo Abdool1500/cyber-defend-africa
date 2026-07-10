@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block title %}Join the Waitlist · Cyber Defend Africa{% endblock %}
+{% block content %}
+<div class="container py-5" style="max-width: 640px;">
+  <h1 class="h3 mb-2">Join the Waitlist</h1>
+  <p class="text-secondary mb-4">Get early updates on Academy launch, course updates, GPT Sentinel updates, and pilot opportunities.</p>
+
+  <div class="mb-4">
+    {% include "includes/waitlist_button.html" with css_class="btn-cda-primary btn-lg" %}
+  </div>
+
+  <h2 class="h6">Or leave your email for updates</h2>
+  <form method="post" novalidate class="d-flex gap-2 flex-wrap">
+    {% csrf_token %}
+    {{ form.email }}
+    <button type="submit" class="btn btn-outline-light">Notify Me</button>
+  </form>
+  {% for error in form.email.errors %}
+  <div class="text-danger small mt-1">{{ error }}</div>
+  {% endfor %}
+</div>
+{% endblock %}

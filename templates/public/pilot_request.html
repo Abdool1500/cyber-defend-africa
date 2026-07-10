@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block title %}Register Pilot Interest · Cyber Defend Africa{% endblock %}
+{% block content %}
+<div class="container py-5" style="max-width: 640px;">
+  <h1 class="h3 mb-2">Register Pilot Interest</h1>
+  <p class="text-secondary mb-4">Interested in piloting GPT Sentinel with your team? Tell us more.</p>
+  <form method="post" novalidate>
+    {% csrf_token %}
+    {% for field in form %}
+    <div class="mb-3">
+      <label class="form-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
+      {{ field }}
+      {% for error in field.errors %}
+      <div class="text-danger small mt-1">{{ error }}</div>
+      {% endfor %}
+    </div>
+    {% endfor %}
+    <button type="submit" class="btn btn-cda-primary">Register Interest</button>
+  </form>
+</div>
+{% endblock %}

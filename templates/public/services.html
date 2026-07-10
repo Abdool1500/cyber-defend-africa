@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block title %}Services · Cyber Defend Africa{% endblock %}
+{% block content %}
+<div class="cda-gradient-hero py-5">
+  <div class="container py-4">
+    <h1 class="display-6 fw-bold">Cybersecurity Services</h1>
+    <p class="lead text-secondary">Practical, hands-on security services delivered by working practitioners.</p>
+  </div>
+</div>
+<div class="container py-5">
+  <div class="row g-4">
+    {% for service in services %}
+    <div class="col-md-6 col-lg-4">
+      <div class="cda-surface p-4 h-100 d-flex flex-column">
+        <h2 class="h6">{{ service.name }}</h2>
+        <p class="text-secondary small mb-2"><strong>Problem:</strong> {{ service.problem }}</p>
+        <p class="text-secondary small mb-2">{{ service.overview }}</p>
+        <p class="text-secondary small mb-2"><strong>Who it's for:</strong> {{ service.who_for }}</p>
+        <p class="text-secondary small mb-2"><strong>Benefits:</strong> {{ service.benefits }}</p>
+        <p class="text-secondary small mb-3"><strong>Process:</strong> {{ service.process }}</p>
+        <a href="{% url 'leads:contact' %}" class="btn btn-outline-light mt-auto">Enquire</a>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}

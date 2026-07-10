@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block title %}Resources · Cyber Defend Africa{% endblock %}
+{% block content %}
+<div class="container py-5">
+  <h1 class="h3 mb-4">Resources</h1>
+  {% if posts %}
+  <div class="row g-4">
+    {% for post in posts %}
+    <div class="col-md-4">
+      <div class="cda-surface p-4 h-100 d-flex flex-column">
+        {% if post.category %}<span class="badge text-bg-secondary mb-2 align-self-start">{{ post.category.name }}</span>{% endif %}
+        <h2 class="h6"><a href="{{ post.get_absolute_url }}" class="link-light link-underline-opacity-0">{{ post.title }}</a></h2>
+        <p class="text-secondary small flex-grow-1">{{ post.excerpt }}</p>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  {% else %}
+  <p class="text-secondary">No articles published yet — check back soon.</p>
+  {% endif %}
+</div>
+{% endblock %}

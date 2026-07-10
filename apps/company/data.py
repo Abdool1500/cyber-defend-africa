@@ -1,0 +1,117 @@
+"""Static structured copy for company pages. Kept out of views.py/templates
+so the same data can be reused (e.g. for solutions cards on the homepage)
+without duplicating text in multiple places."""
+
+SOLUTIONS = [
+    {
+        "name": "Cyber Defend GPT Sentinel",
+        "problem": "Security teams are overwhelmed by alert volume and struggle to triage incidents fast enough.",
+        "overview": "An AI-powered SOC analyst assistant that helps teams triage, investigate, and prioritize security alerts.",
+        "intended_users": "SOC teams, cybersecurity analysts, MSSPs, and organizations with limited security staffing.",
+        "benefits": "Faster triage, contextual investigation support, and consistent human-in-the-loop review.",
+        "cta_url_name": "company:gpt_sentinel",
+        "cta_label": "Explore GPT Sentinel",
+    },
+    {
+        "name": "AI Security",
+        "problem": "Organizations are adopting AI systems faster than they can secure them.",
+        "overview": "Practical guidance and engineering support for securing AI-enabled systems, from LLM applications to ML pipelines.",
+        "intended_users": "Engineering teams building or deploying AI systems, and security teams asked to assess them.",
+        "benefits": "Reduced AI-specific risk exposure and a clearer path to responsible, secure AI adoption.",
+        "cta_url_name": "company:services",
+        "cta_label": "See Our Services",
+    },
+    {
+        "name": "Cybersecurity Services",
+        "problem": "Many organizations lack the in-house expertise to assess and reduce their security risk.",
+        "overview": "Practical assessments, testing, and advisory services delivered by working security practitioners.",
+        "intended_users": "SMEs, enterprises, and public-sector organizations strengthening their security posture.",
+        "benefits": "Clear, actionable findings that map directly to risk reduction — not just a checklist.",
+        "cta_url_name": "company:services",
+        "cta_label": "View Services",
+    },
+    {
+        "name": "Cyber Defend Africa Academy",
+        "problem": "There is a global shortage of practically trained cybersecurity talent.",
+        "overview": "Career-focused, hands-on training programs in AI Security, Ethical Hacking, and SOC Operations.",
+        "intended_users": "Career changers, students, and working professionals building practical security skills.",
+        "benefits": "Structured learning paths, hands-on labs, assessments, and instructor support.",
+        "cta_url_name": "academy:home",
+        "cta_label": "Discover the Academy",
+    },
+]
+
+SERVICES = [
+    {
+        "name": "Vulnerability Assessment",
+        "problem": "Unknown vulnerabilities in infrastructure and applications create unmanaged risk.",
+        "overview": "Systematic identification and prioritization of vulnerabilities across your environment.",
+        "who_for": "Organizations that need a clear, prioritized view of their exposure.",
+        "benefits": "A prioritized remediation roadmap based on real risk, not just scan output.",
+        "process": "Scoping, discovery, testing, analysis, and a detailed findings report.",
+    },
+    {
+        "name": "Web Application Security Assessment",
+        "problem": "Web applications are a leading entry point for attackers.",
+        "overview": "Manual and tool-assisted testing of web applications against the OWASP Top 10 and beyond.",
+        "who_for": "Teams shipping or maintaining customer-facing web applications.",
+        "benefits": "Concrete, reproducible findings mapped to business impact.",
+        "process": "Reconnaissance, authenticated and unauthenticated testing, reporting, and retest support.",
+    },
+    {
+        "name": "Cybersecurity Risk Assessment",
+        "problem": "Leadership teams often lack visibility into their organization's real security risk.",
+        "overview": "A structured assessment of security risk across people, process, and technology.",
+        "who_for": "Executives and risk owners needing a clear risk picture.",
+        "benefits": "A prioritized risk register leadership can actually act on.",
+        "process": "Interviews, control review, risk scoring, and an executive-ready report.",
+    },
+    {
+        "name": "Security Awareness Training",
+        "problem": "Human error remains one of the leading causes of security incidents.",
+        "overview": "Practical, engaging security awareness training tailored to your team.",
+        "who_for": "Organizations of any size looking to reduce human-factor risk.",
+        "benefits": "Measurable improvement in security-conscious behavior.",
+        "process": "Baseline assessment, tailored training delivery, and follow-up reinforcement.",
+    },
+    {
+        "name": "Cybersecurity Consulting",
+        "problem": "Security decisions are often made without dedicated in-house expertise.",
+        "overview": "Ongoing advisory support to guide security strategy and decision-making.",
+        "who_for": "Organizations without a full-time CISO or security leadership function.",
+        "benefits": "Access to practitioner-level expertise without a full-time hire.",
+        "process": "Discovery, advisory engagement, and ongoing strategic support.",
+    },
+    {
+        "name": "Security Architecture Review",
+        "problem": "Security gaps are often designed in long before they're discovered.",
+        "overview": "A structured review of system and network architecture against security best practices.",
+        "who_for": "Teams designing or re-architecting critical systems.",
+        "benefits": "Security issues caught at design time, when they're cheapest to fix.",
+        "process": "Architecture review sessions, documentation analysis, and a findings report.",
+    },
+    {
+        "name": "Incident Readiness Assessment",
+        "problem": "Many organizations discover gaps in their incident response only during a real incident.",
+        "overview": "An assessment of your organization's readiness to detect, respond to, and recover from incidents.",
+        "who_for": "Organizations wanting to validate or build their incident response capability.",
+        "benefits": "A tested, improved readiness posture before an incident happens.",
+        "process": "Plan review, tabletop exercise, gap analysis, and recommendations.",
+    },
+    {
+        "name": "AI Security Assessment",
+        "problem": "AI systems introduce novel risks that traditional security assessments don't cover.",
+        "overview": "A focused assessment of AI-enabled systems, from model access control to prompt-injection exposure.",
+        "who_for": "Teams building or deploying LLM-based or ML-based systems.",
+        "benefits": "Clear visibility into AI-specific risk before it becomes an incident.",
+        "process": "System mapping, threat modeling, testing, and reporting.",
+    },
+    {
+        "name": "Security Training for Teams",
+        "problem": "Technical teams need practical, hands-on security skills, not just theory.",
+        "overview": "Customized, hands-on security training delivered to engineering and operations teams.",
+        "who_for": "Engineering, DevOps, and IT teams that want practical security capability.",
+        "benefits": "Teams that can identify and reduce security risk in their own daily work.",
+        "process": "Needs assessment, tailored curriculum, hands-on delivery.",
+    },
+]

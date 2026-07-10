@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block title %}Log in · Cyber Defend Africa{% endblock %}
+{% block content %}
+<div class="container py-5" style="max-width: 420px;">
+  <h1 class="h3 mb-4">Log in</h1>
+  <form method="post" novalidate>
+    {% csrf_token %}
+    {% for field in form %}
+    <div class="mb-3">
+      <label class="form-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
+      {{ field }}
+      {% for error in field.errors %}
+      <div class="text-danger small mt-1">{{ error }}</div>
+      {% endfor %}
+    </div>
+    {% endfor %}
+    {% if form.non_field_errors %}
+    <div class="alert alert-danger">{{ form.non_field_errors }}</div>
+    {% endif %}
+    <button type="submit" class="btn btn-cda-primary w-100">Log in</button>
+  </form>
+  <div class="d-flex justify-content-between mt-3">
+    <a href="{% url 'accounts:password_reset' %}" class="small">Forgot password?</a>
+    <a href="{% url 'accounts:register' %}" class="small">Create an account</a>
+  </div>
+</div>
+{% endblock %}

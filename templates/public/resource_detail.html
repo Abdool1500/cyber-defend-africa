@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block title %}{{ post.title }} · Cyber Defend Africa{% endblock %}
+{% block content %}
+<div class="container py-5" style="max-width: 760px;">
+  {% if post.category %}<span class="badge text-bg-secondary mb-2">{{ post.category.name }}</span>{% endif %}
+  <h1 class="h3 mb-3">{{ post.title }}</h1>
+  <div class="text-secondary">{{ post.content|linebreaks }}</div>
+</div>
+{% endblock %}

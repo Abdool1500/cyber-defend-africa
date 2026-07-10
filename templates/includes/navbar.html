@@ -1,0 +1,35 @@
+<nav class="navbar navbar-expand-lg navbar-dark cda-navbar sticky-top">
+  <div class="container">
+    <a class="navbar-brand fw-semibold" href="{% url 'core:home' %}">Cyber Defend Africa</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#mainNav" aria-controls="mainNav" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="offcanvas offcanvas-end text-bg-dark" tabindex="-1" id="mainNav" aria-labelledby="mainNavLabel">
+      <div class="offcanvas-header">
+        <h5 class="offcanvas-title" id="mainNavLabel">Menu</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+      </div>
+      <div class="offcanvas-body">
+        <ul class="navbar-nav flex-grow-1 me-auto mb-2 mb-lg-0">
+          <li class="nav-item"><a class="nav-link" href="{% url 'core:home' %}">Home</a></li>
+          <li class="nav-item"><a class="nav-link" href="{% url 'company:about' %}">About</a></li>
+          <li class="nav-item"><a class="nav-link" href="{% url 'company:solutions' %}">Solutions</a></li>
+          <li class="nav-item"><a class="nav-link" href="{% url 'company:gpt_sentinel' %}">GPT Sentinel</a></li>
+          <li class="nav-item"><a class="nav-link" href="{% url 'academy:home' %}">Academy</a></li>
+          <li class="nav-item"><a class="nav-link" href="{% url 'courses:list' %}">Courses</a></li>
+          <li class="nav-item"><a class="nav-link" href="{% url 'company:services' %}">Services</a></li>
+          <li class="nav-item"><a class="nav-link" href="{% url 'resources:list' %}">Resources</a></li>
+          <li class="nav-item"><a class="nav-link" href="{% url 'leads:contact' %}">Contact</a></li>
+        </ul>
+        <div class="d-flex flex-column flex-lg-row gap-2">
+          {% include "includes/waitlist_button.html" with css_class="btn-cda-primary" %}
+          {% if request.user.is_authenticated %}
+          <a class="btn btn-outline-light" href="{% url 'core:post_login_redirect' %}">Dashboard</a>
+          {% else %}
+          <a class="btn btn-outline-light" href="{% url 'accounts:login' %}">Login</a>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</nav>

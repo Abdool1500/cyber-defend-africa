@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block title %}Cyber Defend Africa Academy{% endblock %}
+{% block content %}
+<div class="cda-gradient-hero py-5">
+  <div class="container py-4">
+    <h1 class="display-6 fw-bold">Build Practical Cybersecurity Skills for the Real World</h1>
+    <div class="d-flex flex-wrap gap-2 mt-3">
+      <a href="{% url 'courses:list' %}" class="btn btn-cda-primary">Explore Courses</a>
+      {% include "includes/waitlist_button.html" with css_class="btn-outline-light" %}
+    </div>
+  </div>
+</div>
+<div class="container py-5">
+  <div class="row g-3">
+    {% for benefit in benefits %}
+    <div class="col-md-4 col-sm-6">
+      <div class="cda-surface p-3 h-100">{{ benefit }}</div>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}

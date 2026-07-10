@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block title %}Solutions · Cyber Defend Africa{% endblock %}
+{% block content %}
+<div class="cda-gradient-hero py-5">
+  <div class="container py-4">
+    <h1 class="display-6 fw-bold">Solutions</h1>
+    <p class="lead text-secondary">AI-powered security technology, practical services, and career-focused training.</p>
+  </div>
+</div>
+<div class="container py-5">
+  <div class="row g-4">
+    {% for solution in solutions %}
+    <div class="col-md-6">
+      <div class="cda-surface p-4 h-100 d-flex flex-column">
+        <h2 class="h5">{{ solution.name }}</h2>
+        <p class="text-secondary small mb-2"><strong>Problem:</strong> {{ solution.problem }}</p>
+        <p class="text-secondary small mb-2">{{ solution.overview }}</p>
+        <p class="text-secondary small mb-2"><strong>Who it's for:</strong> {{ solution.intended_users }}</p>
+        <p class="text-secondary small mb-3"><strong>Benefits:</strong> {{ solution.benefits }}</p>
+        <a href="{% url solution.cta_url_name %}" class="btn btn-cda-primary mt-auto">{{ solution.cta_label }}</a>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}

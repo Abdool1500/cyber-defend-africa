@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block title %}Courses · Cyber Defend Africa Academy{% endblock %}
+{% block content %}
+<div class="cda-gradient-hero py-5">
+  <div class="container py-4">
+    <h1 class="display-6 fw-bold">Courses</h1>
+    <p class="lead text-secondary">Career-focused, hands-on cybersecurity training.</p>
+  </div>
+</div>
+<div class="container py-5">
+  {% if courses %}
+  <div class="row g-4">
+    {% for course in courses %}
+    <div class="col-md-4">
+      <div class="cda-surface p-4 h-100 d-flex flex-column">
+        <span class="badge text-bg-secondary mb-2 align-self-start">{{ course.get_level_display }}</span>
+        <h2 class="h5">{{ course.title }}</h2>
+        <p class="text-secondary small flex-grow-1">{{ course.short_description }}</p>
+        <a href="{{ course.get_absolute_url }}" class="btn btn-cda-primary mt-3">View Course</a>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  {% else %}
+  <p class="text-secondary">No courses are published yet. Run <code>python manage.py seed_demo_data</code> to load the flagship courses.</p>
+  {% endif %}
+</div>
+{% endblock %}

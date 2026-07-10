@@ -1,0 +1,23 @@
+{% comment %}
+Centralized waitlist CTA. Include everywhere a "Join Waitlist" action is
+needed instead of hardcoding the form URL/link markup in multiple templates.
+Usage: {% include "includes/waitlist_button.html" with css_class="btn-cda-primary btn-lg" %}
+{% endcomment %}
+{% if WAITLIST_FORM_URL %}
+<a href="{{ WAITLIST_FORM_URL }}"
+   class="btn {{ css_class|default:'btn-cda-primary' }}"
+   target="_blank"
+   rel="noopener noreferrer">
+  Open Waitlist Form
+</a>
+{% else %}
+<button type="button" class="btn {{ css_class|default:'btn-cda-primary' }}" disabled
+        title="Waitlist form is not configured yet">
+  Join Waitlist
+</button>
+{% if debug %}
+<p class="small text-warning mt-1 mb-0">
+  WAITLIST_FORM_URL is not set. Add it to your .env file to enable this button.
+</p>
+{% endif %}
+{% endif %}

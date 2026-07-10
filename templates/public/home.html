@@ -1,0 +1,110 @@
+{% extends "base.html" %}
+{% block title %}Cyber Defend Africa — Defending Today. Securing Tomorrow.{% endblock %}
+{% block content %}
+<section class="cda-gradient-hero py-5">
+  <div class="container py-5 text-center">
+    <h1 class="display-5 fw-bold mb-3">Building a Safer Digital Future Through AI and Cybersecurity</h1>
+    <p class="lead text-secondary mx-auto" style="max-width: 720px;">
+      Cyber Defend Africa LTD develops AI-powered security innovation, practical cybersecurity solutions, and career-focused training designed to help organizations and individuals strengthen digital resilience.
+    </p>
+    <div class="d-flex flex-wrap justify-content-center gap-2 mt-4">
+      <a href="{% url 'company:solutions' %}" class="btn btn-cda-primary btn-lg">Explore Our Solutions</a>
+      {% include "includes/waitlist_button.html" with css_class="btn-outline-light btn-lg" %}
+      <a href="{% url 'academy:home' %}" class="btn btn-outline-light btn-lg">Discover Our Academy</a>
+    </div>
+  </div>
+</section>
+
+<section class="container py-5">
+  <div class="row g-4">
+    <div class="col-md-4">
+      <div class="cda-surface p-4 h-100">
+        <h2 class="h5">Cybersecurity Technology</h2>
+        <p class="text-secondary small mb-0">AI-powered tools built to help security teams work faster and smarter.</p>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="cda-surface p-4 h-100">
+        <h2 class="h5">Practical Security Services</h2>
+        <p class="text-secondary small mb-0">Hands-on assessments, testing, and advisory delivered by working practitioners.</p>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="cda-surface p-4 h-100">
+        <h2 class="h5">Career-Focused Training</h2>
+        <p class="text-secondary small mb-0">Structured, practical learning paths for the next generation of security talent.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="container py-5">
+  <h2 class="h4 mb-3">What We Do</h2>
+  <p class="text-secondary" style="max-width: 760px;">
+    Cyber Defend Africa LTD combines AI-powered security innovation, practical cybersecurity services, and structured
+    workforce development to help organizations and individuals build lasting digital resilience.
+  </p>
+</section>
+
+<section class="cda-surface mx-3 mx-md-auto container py-5">
+  <div class="row align-items-center g-4">
+    <div class="col-md-7">
+      <span class="badge text-bg-info mb-2">{{ GPT_SENTINEL_STAGE|title }}</span>
+      <h2 class="h4">Cyber Defend GPT Sentinel</h2>
+      <p class="text-secondary">An AI-Powered SOC Analyst Assistant for Modern Security Operations.</p>
+      <a href="{% url 'company:gpt_sentinel' %}" class="btn btn-cda-primary">Learn More</a>
+    </div>
+  </div>
+</section>
+
+<section class="container py-5">
+  <h2 class="h4 mb-4">Featured Courses</h2>
+  {% if featured_courses %}
+  <div class="row g-4">
+    {% for course in featured_courses %}
+    <div class="col-md-4">
+      <div class="cda-surface p-4 h-100 d-flex flex-column">
+        <h3 class="h6">{{ course.title }}</h3>
+        <p class="text-secondary small flex-grow-1">{{ course.short_description }}</p>
+        <a href="{{ course.get_absolute_url }}" class="btn btn-outline-light mt-2">View Course</a>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  {% else %}
+  <p class="text-secondary small">Courses will appear here once published — run <code>python manage.py seed_demo_data</code>.</p>
+  {% endif %}
+</section>
+
+<section class="container py-5">
+  <h2 class="h4 mb-3">Services</h2>
+  <p class="text-secondary">Vulnerability assessments, penetration testing, risk assessments, security awareness training, and more.</p>
+  <a href="{% url 'company:services' %}" class="btn btn-outline-light">View All Services</a>
+</section>
+
+<section class="container py-5">
+  <h2 class="h4 mb-3">Why Cyber Defend Africa</h2>
+  <div class="row g-3">
+    <div class="col-md-3 col-sm-6"><div class="cda-surface p-3 h-100">Practical, hands-on approach</div></div>
+    <div class="col-md-3 col-sm-6"><div class="cda-surface p-3 h-100">AI-powered innovation</div></div>
+    <div class="col-md-3 col-sm-6"><div class="cda-surface p-3 h-100">Security by design</div></div>
+    <div class="col-md-3 col-sm-6"><div class="cda-surface p-3 h-100">Globally ambitious, Africa-rooted</div></div>
+  </div>
+</section>
+
+<section class="container py-5">
+  <h2 class="h4 mb-3">Academy Experience</h2>
+  <p class="text-secondary">Structured learning paths, hands-on labs, quizzes, assignments, instructor support, and certificates — all tracked in your personal student dashboard.</p>
+  <a href="{% url 'academy:home' %}" class="btn btn-outline-light">Discover the Academy</a>
+</section>
+
+<section class="cda-gradient-hero py-5">
+  <div class="container py-4 text-center">
+    <h2 class="h3 mb-3">Ready to strengthen your digital resilience?</h2>
+    <div class="d-flex flex-wrap justify-content-center gap-2">
+      {% include "includes/waitlist_button.html" with css_class="btn-cda-primary btn-lg" %}
+      <a href="{% url 'leads:contact' %}" class="btn btn-outline-light btn-lg">Contact Us</a>
+    </div>
+  </div>
+</section>
+{% endblock %}

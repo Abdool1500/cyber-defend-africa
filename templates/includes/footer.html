@@ -1,0 +1,38 @@
+<footer class="cda-surface border-top mt-5 py-5">
+  <div class="container">
+    <div class="row g-4">
+      <div class="col-md-4">
+        <h5 class="mb-2">Cyber Defend Africa</h5>
+        <p class="text-secondary small mb-1">Defending Today. Securing Tomorrow.</p>
+        <p class="text-secondary small">AI-powered cybersecurity solutions, practical security services, and career-focused training for a safer digital future.</p>
+      </div>
+      <div class="col-md-2">
+        <h6 class="mb-2">Company</h6>
+        <ul class="list-unstyled small">
+          <li><a href="{% url 'company:about' %}" class="link-light link-underline-opacity-0">About</a></li>
+          <li><a href="{% url 'company:solutions' %}" class="link-light link-underline-opacity-0">Solutions</a></li>
+          <li><a href="{% url 'company:services' %}" class="link-light link-underline-opacity-0">Services</a></li>
+        </ul>
+      </div>
+      <div class="col-md-2">
+        <h6 class="mb-2">Academy</h6>
+        <ul class="list-unstyled small">
+          <li><a href="{% url 'academy:home' %}" class="link-light link-underline-opacity-0">Academy</a></li>
+          <li><a href="{% url 'courses:list' %}" class="link-light link-underline-opacity-0">Courses</a></li>
+        </ul>
+      </div>
+      <div class="col-md-2">
+        <h6 class="mb-2">Legal</h6>
+        <ul class="list-unstyled small">
+          <li><a href="{% url 'company:privacy' %}" class="link-light link-underline-opacity-0">Privacy</a></li>
+          <li><a href="{% url 'company:terms' %}" class="link-light link-underline-opacity-0">Terms</a></li>
+        </ul>
+      </div>
+      <div class="col-md-2">
+        {% include "includes/waitlist_button.html" with css_class="btn-outline-light w-100" %}
+      </div>
+    </div>
+    <hr class="border-secondary">
+    <p class="text-secondary small mb-0">&copy; {% now "Y" %} Cyber Defend Africa LTD. All rights reserved.</p>
+  </div>
+</footer>

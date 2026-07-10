@@ -1,0 +1,94 @@
+{% extends "base.html" %}
+{% block title %}{{ course.title }} · Cyber Defend Africa Academy{% endblock %}
+{% block content %}
+<div class="cda-gradient-hero py-5">
+  <div class="container py-4">
+    <span class="badge text-bg-secondary mb-2">{{ course.get_level_display }}</span>
+    <h1 class="display-6 fw-bold">{{ course.title }}</h1>
+    <p class="lead text-secondary">{{ course.short_description }}</p>
+    <div class="d-flex flex-wrap gap-2 mt-3">
+      {% if is_enrolled %}
+      <a href="{% url 'student:course_detail' course.id %}" class="btn btn-cda-primary">Continue Learning</a>
+      {% elif request.user.is_authenticated %}
+      <span class="text-secondary small align-self-center">Enroll from your student dashboard to start this course.</span>
+      {% else %}
+      <a href="{% url 'accounts:register' %}" class="btn btn-cda-primary">Get Started</a>
+      {% endif %}
+      {% include "includes/waitlist_button.html" with css_class="btn-outline-light" %}
+    </div>
+  </div>
+</div>
+
+<div class="container py-5">
+  <div class="row g-5">
+    <div class="col-lg-8">
+      <h2 class="h4">Overview</h2>
+      <p class="text-secondary">{{ course.description }}</p>
+
+      <h2 class="h4 mt-4">Curriculum</h2>
+      {% if course.modules.all %}
+      <div class="accordion" id="curriculumAccordion">
+        {% for module in course.modules.all %}
+        <div class="accordion-item bg-transparent">
+          <h3 class="accordion-header">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#module-{{ forloop.counter }}">
+              {{ module.title }}
+            </button>
+          </h3>
+          <div id="module-{{ forloop.counter }}" class="accordion-collapse collapse" data-bs-parent="#curriculumAccordion">
+            <div class="accordion-body">
+              <ul class="mb-0">
+                {% for lesson in module.lessons.all %}
+                <li>{{ lesson.title }}</li>
+                {% endfor %}
+              </ul>
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+      {% else %}
+      <p class="text-secondary small">Curriculum details are being finalized for this course.</p>
+      {% endif %}
+
+      <h2 class="h4 mt-5">FAQ</h2>
+      <div class="accordion" id="faqAccordion">
+        <div class="accordion-item bg-transparent">
+          <h3 class="accordion-header">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq-1">How long does this course take?</button>
+          </h3>
+          <div id="faq-1" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+            <div class="accordion-body text-secondary">{{ course.estimated_duration|default:"Duration varies by learner pace — see the course overview above." }}</div>
+          </div>
+        </div>
+        <div class="accordion-item bg-transparent">
+          <h3 class="accordion-header">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq-2">Do I get a certificate?</button>
+          </h3>
+          <div id="faq-2" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+            <div class="accordion-body text-secondary">Students who complete the course requirements receive a Cyber Defend Africa Academy certificate of completion, verifiable on our public certificate verification page.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-lg-4">
+      <div class="cda-surface p-4 mb-3">
+        <h3 class="h6">What You Get</h3>
+        <ul class="text-secondary small mb-0">
+          <li>Structured modules and lessons</li>
+          <li>Hands-on practical labs</li>
+          <li>Quizzes and assessments</li>
+          <li>Instructor support</li>
+          <li>Progress tracking</li>
+          <li>Certificate of completion</li>
+        </ul>
+      </div>
+      <div class="cda-surface p-4">
+        <h3 class="h6">Career Pathways</h3>
+        <p class="text-secondary small mb-0">This course is designed to build practical, job-relevant skills. Outcomes depend on individual effort — we do not guarantee employment or salary outcomes.</p>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
