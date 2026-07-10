@@ -1,0 +1,24 @@
+{% extends "instructor/base.html" %}
+{% block title %}Dashboard · Instructor{% endblock %}
+{% block instructor_content %}
+<h1 class="h4 mb-1">Welcome back, {{ request.user.full_name }}</h1>
+<p class="text-secondary mb-4">Overview of your assigned courses.</p>
+
+<div class="row g-3 mb-4">
+  <div class="col-md-3"><div class="cda-surface p-3"><div class="text-secondary small">Assigned Courses</div><div class="h4 mb-0">{{ assignments|length }}</div></div></div>
+  <div class="col-md-3"><div class="cda-surface p-3"><div class="text-secondary small">Students</div><div class="h4 mb-0">{{ student_count }}</div></div></div>
+  <div class="col-md-3"><div class="cda-surface p-3"><div class="text-secondary small">Pending Quiz Grading</div><div class="h4 mb-0">{{ pending_grading }}</div></div></div>
+  <div class="col-md-3"><div class="cda-surface p-3"><div class="text-secondary small">Pending Submissions</div><div class="h4 mb-0">{{ pending_submissions }}</div></div></div>
+</div>
+
+<h2 class="h6 mb-3">Your Courses</h2>
+<div class="row g-3">
+  {% for assignment in assignments %}
+  <div class="col-md-4">
+    <div class="cda-surface p-3">{{ assignment.course.title }}</div>
+  </div>
+  {% empty %}
+  <p class="text-secondary">No courses assigned to you yet.</p>
+  {% endfor %}
+</div>
+{% endblock %}

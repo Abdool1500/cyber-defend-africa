@@ -1,0 +1,13 @@
+{
+  "name": "cyber-defend-africa",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Cyber Defend Africa LTD platform — frontend JavaScript modules and tests.",
+  "scripts": {
+    "test": "jest"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0",
+    "jest-environment-jsdom": "^29.7.0"
+  }
+}

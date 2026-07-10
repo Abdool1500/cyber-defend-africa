@@ -1,0 +1,18 @@
+{% extends "student/base.html" %}
+{% block title %}Quizzes · Student{% endblock %}
+{% block student_content %}
+<h1 class="h4 mb-4">Quizzes</h1>
+<div class="row g-3">
+  {% for quiz in quizzes %}
+  <div class="col-md-6">
+    <div class="cda-surface p-3 h-100 d-flex flex-column">
+      <h2 class="h6">{{ quiz.title }}</h2>
+      <p class="text-secondary small flex-grow-1">{{ quiz.course.title }} · {{ quiz.attempt_limit }} attempt(s) allowed</p>
+      <a href="{% url 'student_quizzes:detail' quiz.id %}" class="btn btn-outline-light">View Quiz</a>
+    </div>
+  </div>
+  {% empty %}
+  <p class="text-secondary">No quizzes are available for your enrolled courses yet.</p>
+  {% endfor %}
+</div>
+{% endblock %}

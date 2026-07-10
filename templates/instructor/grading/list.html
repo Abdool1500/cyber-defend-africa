@@ -1,0 +1,28 @@
+{% extends "instructor/base.html" %}
+{% block title %}Grading · Instructor{% endblock %}
+{% block instructor_content %}
+<h1 class="h4 mb-4">Grading</h1>
+<div class="table-responsive cda-surface">
+  <table class="table table-dark table-hover align-middle mb-0">
+    <thead><tr><th>Student</th><th>Quiz</th><th>Course</th><th>Submitted</th><th>Status</th><th>Score</th><th></th></tr></thead>
+    <tbody>
+      {% for attempt in attempts %}
+      <tr>
+        <td>{{ attempt.student.full_name }}</td>
+        <td>{{ attempt.quiz.title }}</td>
+        <td>{{ attempt.quiz.course.title }}</td>
+        <td>{{ attempt.submitted_at|date:"Y-m-d H:i" }}</td>
+        <td>
+          {% if attempt.status == 'pending_manual_grading' %}<span class="badge text-bg-warning">Needs Grading</span>
+          {% else %}<span class="badge text-bg-success">Graded</span>{% endif %}
+        </td>
+        <td>{% if attempt.percentage != None %}{{ attempt.percentage }}%{% else %}—{% endif %}</td>
+        <td><a href="{% url 'instructor_grading:detail' attempt.id %}" class="btn btn-sm btn-outline-light">Review</a></td>
+      </tr>
+      {% empty %}
+      <tr><td colspan="7" class="text-secondary text-center py-4">No attempts awaiting grading.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

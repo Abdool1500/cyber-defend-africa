@@ -1,0 +1,46 @@
+{% extends "instructor/base.html" %}
+{% block title %}Grade Attempt · Instructor{% endblock %}
+{% block instructor_content %}
+<h1 class="h4 mb-1">Grade Attempt</h1>
+<p class="text-secondary small mb-4">{{ attempt.student.full_name }} · {{ attempt.quiz.title }} · {{ attempt.quiz.course.title }}</p>
+
+<div class="cda-surface p-3 mb-4">
+  <strong>Auto-graded score so far:</strong>
+  {% if attempt.percentage != None %}{{ attempt.score }} / {{ attempt.max_score }} ({{ attempt.percentage }}%){% else %}Pending manual grading{% endif %}
+</div>
+
+<form method="post">
+  {% csrf_token %}
+  {% for answer in answers %}
+  <div class="cda-surface p-3 mb-3">
+    <p class="mb-1"><strong>Q{{ forloop.counter }}.</strong> {{ answer.attempt_question.question.question_text }}</p>
+    <p class="text-secondary small mb-2">Max points: {{ answer.attempt_question.points }}</p>
+
+    {% if answer.attempt_question.question.question_type == 'short_answer' %}
+    <p class="mb-2"><strong>Student answer:</strong> {{ answer.text_answer|default:"(no answer submitted)" }}</p>
+    {% if answer.attempt_question.question.model_answer %}<p class="text-secondary small">Model answer: {{ answer.attempt_question.question.model_answer }}</p>{% endif %}
+    {% if answer.attempt_question.question.grading_guidance %}<p class="text-secondary small">Grading guidance: {{ answer.attempt_question.question.grading_guidance }}</p>{% endif %}
+    <div class="row g-2">
+      <div class="col-md-3">
+        <label class="form-label small">Awarded points</label>
+        <input type="number" step="0.5" min="0" max="{{ answer.attempt_question.points }}" name="points_{{ answer.id }}" value="{{ answer.awarded_points|default_if_none:'' }}" class="form-control">
+      </div>
+      <div class="col-md-9">
+        <label class="form-label small">Feedback</label>
+        <input type="text" name="feedback_{{ answer.id }}" value="{{ answer.instructor_feedback }}" class="form-control">
+      </div>
+    </div>
+    {% else %}
+    <p class="mb-0">
+      Auto-graded:
+      {% if answer.is_correct %}<span class="badge text-bg-success">Correct</span>{% else %}<span class="badge text-bg-danger">Incorrect</span>{% endif %}
+      — {{ answer.awarded_points }} / {{ answer.attempt_question.points }} points
+    </p>
+    {% endif %}
+  </div>
+  {% endfor %}
+
+  <button type="submit" name="save" class="btn btn-outline-light">Save Grades</button>
+  <button type="submit" name="finalize" value="1" class="btn btn-cda-primary">Finalize Attempt</button>
+</form>
+{% endblock %}

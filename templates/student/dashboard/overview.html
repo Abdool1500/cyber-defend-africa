@@ -1,0 +1,41 @@
+{% extends "student/base.html" %}
+{% block title %}Dashboard · Student{% endblock %}
+{% block student_content %}
+<h1 class="h4 mb-1">Welcome back, {{ request.user.full_name }}</h1>
+<p class="text-secondary mb-4">Here's what's happening across your courses.</p>
+
+<div class="row g-3 mb-4">
+  <div class="col-md-4"><div class="cda-surface p-3"><div class="text-secondary small">Enrolled Courses</div><div class="h4 mb-0">{{ enrollments|length }}</div></div></div>
+  <div class="col-md-4"><div class="cda-surface p-3"><div class="text-secondary small">Upcoming Quizzes</div><div class="h4 mb-0">{{ upcoming_quizzes|length }}</div></div></div>
+  <div class="col-md-4"><div class="cda-surface p-3"><div class="text-secondary small">Certificates Earned</div><div class="h4 mb-0">{{ certificate_count }}</div></div></div>
+</div>
+
+<h2 class="h6 mb-3">Continue Learning</h2>
+<div class="row g-3 mb-4">
+  {% for enrollment in enrollments %}
+  <div class="col-md-4">
+    <div class="cda-surface p-3 h-100 d-flex flex-column">
+      <p class="mb-1 fw-semibold">{{ enrollment.course.title }}</p>
+      <div class="progress mb-2" style="height: 6px;">
+        <div class="progress-bar bg-info" style="width: {{ enrollment.progress_percentage }}%"></div>
+      </div>
+      <p class="text-secondary small mb-2">{{ enrollment.progress_percentage }}% complete</p>
+      <a href="{{ enrollment.course.get_absolute_url }}" class="btn btn-outline-light btn-sm mt-auto">Continue</a>
+    </div>
+  </div>
+  {% empty %}
+  <p class="text-secondary">You're not enrolled in any courses yet. <a href="{% url 'courses:list' %}">Browse courses</a>.</p>
+  {% endfor %}
+</div>
+
+<h2 class="h6 mb-3">Upcoming Quizzes</h2>
+<ul class="list-group list-group-flush cda-surface">
+  {% for quiz in upcoming_quizzes %}
+  <li class="list-group-item bg-transparent text-light d-flex justify-content-between align-items-center">
+    {{ quiz.title }} <a href="{% url 'student_quizzes:detail' quiz.id %}" class="btn btn-sm btn-outline-light">View</a>
+  </li>
+  {% empty %}
+  <li class="list-group-item bg-transparent text-secondary">No upcoming quizzes.</li>
+  {% endfor %}
+</ul>
+{% endblock %}

@@ -1,0 +1,33 @@
+{% extends "student/base.html" %}
+{% block title %}Feedback · Student{% endblock %}
+{% block student_content %}
+<h1 class="h4 mb-4">Feedback</h1>
+
+<h2 class="h6">Courses you can leave feedback for</h2>
+<div class="row g-3 mb-4">
+  {% for course in eligible_courses %}
+  <div class="col-md-4">
+    <div class="cda-surface p-3 h-100 d-flex flex-column">
+      <p class="mb-2">{{ course.title }}</p>
+      <a href="{% url 'student_feedback:create' course.id %}" class="btn btn-cda-primary mt-auto">Give Feedback</a>
+    </div>
+  </div>
+  {% empty %}
+  <p class="text-secondary">You've submitted feedback for all of your eligible courses, or aren't enrolled yet.</p>
+  {% endfor %}
+</div>
+
+<h2 class="h6">Your submitted feedback</h2>
+<div class="table-responsive cda-surface">
+  <table class="table table-dark align-middle mb-0">
+    <thead><tr><th>Course</th><th>Overall Rating</th><th>Submitted</th></tr></thead>
+    <tbody>
+      {% for f in my_feedback %}
+      <tr><td>{{ f.course.title }}</td><td>{{ f.overall_rating }}/5</td><td>{{ f.created_at|date:"Y-m-d" }}</td></tr>
+      {% empty %}
+      <tr><td colspan="3" class="text-secondary text-center py-4">No feedback submitted yet.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

@@ -1,0 +1,27 @@
+{% extends "instructor/base.html" %}
+{% block title %}Preview Question · Instructor{% endblock %}
+{% block instructor_content %}
+<h1 class="h4 mb-1">Question Preview</h1>
+<p class="text-secondary small mb-4">{{ question.course.title }} · {{ question.get_question_type_display }} · {{ question.get_difficulty_display }} · {{ question.default_points }} pts</p>
+
+<div class="cda-surface p-4 mb-4">
+  <p class="mb-3">{{ question.question_text }}</p>
+  {% if question.options.all %}
+  <ul class="list-unstyled">
+    {% for option in question.options.all %}
+    <li class="mb-1">
+      {% if option.is_correct %}<i class="bi bi-check-circle-fill text-success"></i>{% else %}<i class="bi bi-circle text-secondary"></i>{% endif %}
+      {{ option.option_text }}
+    </li>
+    {% endfor %}
+  </ul>
+  {% else %}
+  <p class="text-secondary small">Short answer — graded manually.</p>
+  {% if question.model_answer %}<p class="text-secondary small"><strong>Model answer:</strong> {{ question.model_answer }}</p>{% endif %}
+  {% endif %}
+  {% if question.explanation %}<p class="text-secondary small mt-3"><strong>Explanation:</strong> {{ question.explanation }}</p>{% endif %}
+</div>
+
+<a href="{% url 'instructor_question_bank:edit' question.id %}" class="btn btn-cda-primary">Edit</a>
+<a href="{% url 'instructor_question_bank:list' %}" class="btn btn-outline-light">Back to Question Bank</a>
+{% endblock %}

@@ -1,0 +1,26 @@
+{% extends "student/base.html" %}
+{% block title %}Assignments · Student{% endblock %}
+{% block student_content %}
+<h1 class="h4 mb-4">Assignments</h1>
+<div class="table-responsive cda-surface">
+  <table class="table table-dark table-hover align-middle mb-0">
+    <thead><tr><th>Title</th><th>Course</th><th>Due</th><th>Status</th><th></th></tr></thead>
+    <tbody>
+      {% for assignment, submission in rows %}
+      <tr>
+        <td>{{ assignment.title }}</td>
+        <td>{{ assignment.course.title }}</td>
+        <td>{{ assignment.due_at|date:"Y-m-d H:i"|default:"No deadline" }}</td>
+        <td>
+          {% if submission %}<span class="badge text-bg-secondary">{{ submission.get_status_display }}</span>
+          {% else %}<span class="badge text-bg-warning">Not submitted</span>{% endif %}
+        </td>
+        <td><a href="{% url 'student_assignments:detail' assignment.id %}" class="btn btn-sm btn-outline-light">View</a></td>
+      </tr>
+      {% empty %}
+      <tr><td colspan="5" class="text-secondary text-center py-4">No assignments for your enrolled courses yet.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

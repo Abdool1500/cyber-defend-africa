@@ -1,0 +1,92 @@
+{% extends "instructor/base.html" %}
+{% block title %}{% if is_edit %}Manage Quiz{% else %}New Quiz{% endif %} · Instructor{% endblock %}
+{% block instructor_content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <h1 class="h4 mb-0">{% if is_edit %}Manage Quiz — {{ quiz.title }}{% else %}New Quiz{% endif %}</h1>
+  {% if is_edit %}
+  <div>
+    {% if quiz.status == 'published' %}
+    <form method="post" action="{% url 'instructor_quizzes:unpublish' quiz.id %}" class="d-inline">{% csrf_token %}<button class="btn btn-outline-warning">Unpublish</button></form>
+    {% else %}
+    <form method="post" action="{% url 'instructor_quizzes:publish' quiz.id %}" class="d-inline">{% csrf_token %}<button class="btn btn-cda-primary">Publish</button></form>
+    {% endif %}
+  </div>
+  {% endif %}
+</div>
+
+<form method="post" class="cda-surface p-4 mb-4">
+  {% csrf_token %}
+  <div class="row g-3">
+    {% for field in form %}
+    <div class="col-md-6">
+      <label class="form-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
+      {{ field }}
+      {% for error in field.errors %}<div class="text-danger small mt-1">{{ error }}</div>{% endfor %}
+    </div>
+    {% endfor %}
+  </div>
+  <button type="submit" class="btn btn-cda-primary mt-3">{% if is_edit %}Save Changes{% else %}Create Quiz{% endif %}</button>
+</form>
+
+{% if is_edit %}
+<div class="row g-4">
+  <div class="col-lg-6">
+    <div class="cda-surface p-4">
+      <h2 class="h6">Selected Questions ({{ quiz_questions|length }})</h2>
+      <ul class="list-group list-group-flush mb-3">
+        {% for qq in quiz_questions %}
+        <li class="list-group-item bg-transparent text-light d-flex justify-content-between align-items-center">
+          <span>{{ qq.question.question_text|truncatechars:50 }}</span>
+          <form method="post" action="{% url 'instructor_quizzes:remove_question' quiz.id qq.id %}">{% csrf_token %}<button class="btn btn-sm btn-outline-danger">Remove</button></form>
+        </li>
+        {% empty %}
+        <li class="list-group-item bg-transparent text-secondary">No manually-selected questions yet.</li>
+        {% endfor %}
+      </ul>
+
+      <h3 class="h6">Add from Question Bank</h3>
+      <ul class="list-group list-group-flush">
+        {% for question in available_questions %}
+        <li class="list-group-item bg-transparent text-light d-flex justify-content-between align-items-center">
+          <span>{{ question.question_text|truncatechars:50 }}</span>
+          <form method="post" action="{% url 'instructor_quizzes:add_question' quiz.id %}">
+            {% csrf_token %}
+            <input type="hidden" name="question_id" value="{{ question.id }}">
+            <button class="btn btn-sm btn-outline-light">Add</button>
+          </form>
+        </li>
+        {% empty %}
+        <li class="list-group-item bg-transparent text-secondary">No more published questions available for this course.</li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+
+  <div class="col-lg-6">
+    <div class="cda-surface p-4">
+      <h2 class="h6">Random Selection Rules</h2>
+      <ul class="list-group list-group-flush mb-3">
+        {% for rule in random_rules %}
+        <li class="list-group-item bg-transparent text-light d-flex justify-content-between align-items-center">
+          <span>{{ rule.number_of_questions }} × {{ rule.get_difficulty_display|default:"any difficulty" }}{% if rule.topic %} / {{ rule.topic }}{% endif %}</span>
+          <form method="post" action="{% url 'instructor_quizzes:remove_random_rule' quiz.id rule.id %}">{% csrf_token %}<button class="btn btn-sm btn-outline-danger">Remove</button></form>
+        </li>
+        {% empty %}
+        <li class="list-group-item bg-transparent text-secondary">No random rules configured.</li>
+        {% endfor %}
+      </ul>
+      <form method="post" action="{% url 'instructor_quizzes:add_random_rule' quiz.id %}" class="row g-2">
+        {% csrf_token %}
+        {% for field in random_rule_form %}
+        <div class="col-6">
+          <label class="form-label small">{{ field.label }}</label>
+          {{ field }}
+        </div>
+        {% endfor %}
+        <div class="col-12"><button class="btn btn-outline-light mt-2">Add Random Rule</button></div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endif %}
+{% endblock %}

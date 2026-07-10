@@ -1,0 +1,113 @@
+{% extends "instructor/base.html" %}
+{% block title %}Question Bank · Instructor{% endblock %}
+{% block instructor_content %}
+<h1 class="h4 mb-4">Question Bank</h1>
+
+<div class="row g-3 mb-4">
+  <div class="col-md-3"><div class="cda-surface p-3"><div class="text-secondary small">Total Questions</div><div class="h4 mb-0">{{ summary.total }}</div></div></div>
+  <div class="col-md-3"><div class="cda-surface p-3"><div class="text-secondary small">Published</div><div class="h4 mb-0">{{ summary.published }}</div></div></div>
+  <div class="col-md-3"><div class="cda-surface p-3"><div class="text-secondary small">Drafts</div><div class="h4 mb-0">{{ summary.draft }}</div></div></div>
+  <div class="col-md-3"><div class="cda-surface p-3"><div class="text-secondary small">Archived</div><div class="h4 mb-0">{{ summary.archived }}</div></div></div>
+</div>
+
+<form method="get" class="row g-2 mb-4">
+  <div class="col-md-3">
+    <input type="search" name="q" value="{{ request.GET.q }}" class="form-control" placeholder="Search question text or topic">
+  </div>
+  <div class="col-md-2">
+    <select name="course" class="form-select">
+      <option value="">All courses</option>
+      {% for assignment in assigned_courses %}
+      <option value="{{ assignment.course.id }}" {% if request.GET.course == assignment.course.id|stringformat:"s" %}selected{% endif %}>{{ assignment.course.title }}</option>
+      {% endfor %}
+    </select>
+  </div>
+  <div class="col-md-2">
+    <select name="type" class="form-select">
+      <option value="">All types</option>
+      {% for value, label in question_types %}
+      <option value="{{ value }}" {% if request.GET.type == value %}selected{% endif %}>{{ label }}</option>
+      {% endfor %}
+    </select>
+  </div>
+  <div class="col-md-2">
+    <select name="difficulty" class="form-select">
+      <option value="">All difficulties</option>
+      {% for value, label in difficulties %}
+      <option value="{{ value }}" {% if request.GET.difficulty == value %}selected{% endif %}>{{ label }}</option>
+      {% endfor %}
+    </select>
+  </div>
+  <div class="col-md-2">
+    <select name="status" class="form-select">
+      <option value="">Active (not archived)</option>
+      {% for value, label in statuses %}
+      <option value="{{ value }}" {% if request.GET.status == value %}selected{% endif %}>{{ label }}</option>
+      {% endfor %}
+    </select>
+  </div>
+  <div class="col-md-1">
+    <button class="btn btn-outline-light w-100" type="submit">Filter</button>
+  </div>
+</form>
+
+<div class="d-flex justify-content-end mb-3">
+  <a href="{% url 'instructor_question_bank:create' %}" class="btn btn-cda-primary">New Question</a>
+</div>
+
+<div class="table-responsive cda-surface">
+  <table class="table table-dark table-hover align-middle mb-0">
+    <thead>
+      <tr>
+        <th>Question</th>
+        <th>Course</th>
+        <th>Type</th>
+        <th>Difficulty</th>
+        <th>Points</th>
+        <th>Status</th>
+        <th>Updated</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for question in page_obj %}
+      <tr>
+        <td>{{ question.question_text|truncatechars:60 }}</td>
+        <td>{{ question.course.title }}</td>
+        <td>{{ question.get_question_type_display }}</td>
+        <td>{{ question.get_difficulty_display }}</td>
+        <td>{{ question.default_points }}</td>
+        <td><span class="badge text-bg-secondary">{{ question.get_status_display }}</span>{% if question.is_locked %} <span class="badge text-bg-warning">Locked</span>{% endif %}</td>
+        <td>{{ question.updated_at|date:"Y-m-d" }}</td>
+        <td class="text-nowrap">
+          <a href="{% url 'instructor_question_bank:preview' question.id %}" class="btn btn-sm btn-outline-light">Preview</a>
+          <a href="{% url 'instructor_question_bank:edit' question.id %}" class="btn btn-sm btn-outline-light">Edit</a>
+          <a href="{% url 'instructor_question_bank:duplicate' question.id %}" class="btn btn-sm btn-outline-light">Duplicate</a>
+          {% if question.status == 'archived' %}
+          <a href="{% url 'instructor_question_bank:restore' question.id %}" class="btn btn-sm btn-outline-light">Restore</a>
+          {% else %}
+          <a href="{% url 'instructor_question_bank:archive' question.id %}" class="btn btn-sm btn-outline-light">Archive</a>
+          {% endif %}
+        </td>
+      </tr>
+      {% empty %}
+      <tr><td colspan="8" class="text-secondary text-center py-4">No questions match your filters yet.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+{% if page_obj.has_other_pages %}
+<nav class="mt-3">
+  <ul class="pagination">
+    {% if page_obj.has_previous %}
+    <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}">Previous</a></li>
+    {% endif %}
+    <li class="page-item disabled"><span class="page-link">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span></li>
+    {% if page_obj.has_next %}
+    <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}">Next</a></li>
+    {% endif %}
+  </ul>
+</nav>
+{% endif %}
+{% endblock %}

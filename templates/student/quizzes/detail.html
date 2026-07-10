@@ -1,0 +1,26 @@
+{% extends "student/base.html" %}
+{% block title %}{{ quiz.title }} · Student{% endblock %}
+{% block student_content %}
+<h1 class="h4 mb-1">{{ quiz.title }}</h1>
+<p class="text-secondary small mb-4">{{ quiz.course.title }}</p>
+
+<div class="cda-surface p-4 mb-4">
+  <p>{{ quiz.instructions|default:quiz.description }}</p>
+  <ul class="text-secondary small">
+    <li>Attempts used: {{ attempts_used }} / {{ quiz.attempt_limit }}</li>
+    {% if quiz.time_limit_minutes %}<li>Time limit: {{ quiz.time_limit_minutes }} minutes</li>{% endif %}
+    <li>Passing score: {{ quiz.passing_score }}%</li>
+  </ul>
+
+  {% if in_progress %}
+  <a href="{% url 'student_quizzes:attempt' in_progress.id %}" class="btn btn-cda-primary">Resume Attempt</a>
+  {% elif attempts_used >= quiz.attempt_limit %}
+  <p class="text-warning">You have used all of your attempts for this quiz.</p>
+  {% else %}
+  <form method="post" action="{% url 'student_quizzes:start' quiz.id %}">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-cda-primary">Start Quiz</button>
+  </form>
+  {% endif %}
+</div>
+{% endblock %}

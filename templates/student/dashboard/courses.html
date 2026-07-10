@@ -1,0 +1,18 @@
+{% extends "student/base.html" %}
+{% block title %}My Courses · Student{% endblock %}
+{% block student_content %}
+<h1 class="h4 mb-4">My Courses</h1>
+<div class="row g-3">
+  {% for enrollment in enrollments %}
+  <div class="col-md-4">
+    <div class="cda-surface p-3 h-100 d-flex flex-column">
+      <p class="mb-1 fw-semibold">{{ enrollment.course.title }}</p>
+      <p class="text-secondary small mb-2">{{ enrollment.progress_percentage }}% complete</p>
+      <a href="{{ enrollment.course.get_absolute_url }}" class="btn btn-outline-light btn-sm mt-auto">Open Course</a>
+    </div>
+  </div>
+  {% empty %}
+  <p class="text-secondary">You're not enrolled in any courses yet. <a href="{% url 'courses:list' %}">Browse courses</a>.</p>
+  {% endfor %}
+</div>
+{% endblock %}

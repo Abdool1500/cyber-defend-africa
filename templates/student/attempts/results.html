@@ -1,0 +1,39 @@
+{% extends "student/base.html" %}
+{% block title %}Quiz Result · Student{% endblock %}
+{% block student_content %}
+<h1 class="h4 mb-1">{{ quiz.title }} — Result</h1>
+<p class="text-secondary small mb-4">{{ quiz.course.title }} · Attempt #{{ attempt.attempt_number }} · Submitted {{ attempt.submitted_at|date:"Y-m-d H:i" }}</p>
+
+<div class="cda-surface p-4 mb-4">
+  {% if attempt.status == 'pending_manual_grading' %}
+  <p class="mb-0">Your quiz has been submitted and includes short-answer questions pending manual review by your instructor. Your final score will appear here once grading is complete.</p>
+  {% elif quiz.show_score_after_submission %}
+  <p class="h5 mb-2">Score: {{ attempt.score }} / {{ attempt.max_score }} ({{ attempt.percentage }}%)</p>
+  {% if attempt.passed %}
+  <span class="badge text-bg-success">Passed</span>
+  {% else %}
+  <span class="badge text-bg-danger">Not Passed</span>
+  {% endif %}
+  {% else %}
+  <p class="mb-0">Your quiz has been graded. Score visibility is disabled for this quiz by your instructor.</p>
+  {% endif %}
+</div>
+
+{% if show_answers %}
+<h2 class="h5 mb-3">Review</h2>
+{% for answer in answers %}
+<div class="cda-surface p-3 mb-3">
+  <p class="mb-1"><strong>Q{{ forloop.counter }}.</strong> {{ answer.attempt_question.question.question_text }}</p>
+  <p class="mb-1">
+    {% if answer.is_correct %}<span class="badge text-bg-success">Correct</span>{% elif answer.is_correct == False %}<span class="badge text-bg-danger">Incorrect</span>{% else %}<span class="badge text-bg-secondary">Manually graded</span>{% endif %}
+    — {{ answer.awarded_points }} / {{ answer.attempt_question.points }} points
+  </p>
+  {% if quiz.show_explanations and answer.attempt_question.question.explanation %}
+  <p class="text-secondary small mb-0">{{ answer.attempt_question.question.explanation }}</p>
+  {% endif %}
+</div>
+{% endfor %}
+{% endif %}
+
+<a href="{% url 'student_quizzes:attempt_list' %}" class="btn btn-outline-light">Back to Attempts</a>
+{% endblock %}

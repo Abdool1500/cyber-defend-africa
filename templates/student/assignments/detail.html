@@ -1,0 +1,46 @@
+{% extends "student/base.html" %}
+{% block title %}{{ assignment.title }} · Student{% endblock %}
+{% block student_content %}
+<h1 class="h4 mb-1">{{ assignment.title }}</h1>
+<p class="text-secondary small mb-4">{{ assignment.course.title }} · Due {{ assignment.due_at|date:"Y-m-d H:i"|default:"No deadline" }} · Max {{ assignment.max_points }} points</p>
+
+<div class="cda-surface p-4 mb-4">
+  <p>{{ assignment.instructions|default:assignment.description }}</p>
+</div>
+
+{% if submission and submission.status == 'graded' %}
+<div class="cda-surface p-4 mb-4">
+  <h2 class="h6">Your Grade</h2>
+  <p class="h5">{{ submission.score }} / {{ assignment.max_points }}</p>
+  {% if submission.instructor_feedback %}<p class="text-secondary">{{ submission.instructor_feedback }}</p>{% endif %}
+</div>
+{% endif %}
+
+{% if submission %}
+<div class="cda-surface p-4 mb-4">
+  <h2 class="h6">Your Submission</h2>
+  {% if submission.text_submission %}<p class="text-secondary">{{ submission.text_submission|linebreaks }}</p>{% endif %}
+  {% if signed_url %}<a href="{{ signed_url }}" class="btn btn-outline-light btn-sm" target="_blank" rel="noopener noreferrer">Download your file</a>
+  {% elif submission.storage_path %}<p class="text-secondary small">File: {{ submission.original_filename }}</p>{% endif %}
+</div>
+{% endif %}
+
+{% if is_past_due and not assignment.allow_late_submissions and not submission %}
+<p class="text-danger">The deadline for this assignment has passed and late submissions are not accepted.</p>
+{% elif can_submit %}
+<form method="post" enctype="multipart/form-data" class="cda-surface p-4">
+  {% csrf_token %}
+  {% if form.non_field_errors %}<div class="alert alert-danger">{{ form.non_field_errors }}</div>{% endif %}
+  {% for field in form %}
+  <div class="mb-3">
+    <label class="form-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
+    {{ field }}
+    {% for error in field.errors %}<div class="text-danger small mt-1">{{ error }}</div>{% endfor %}
+  </div>
+  {% endfor %}
+  <button type="submit" class="btn btn-cda-primary">{% if submission %}Resubmit{% else %}Submit{% endif %}</button>
+</form>
+{% else %}
+<p class="text-secondary">This assignment has been graded and can no longer be resubmitted.</p>
+{% endif %}
+{% endblock %}

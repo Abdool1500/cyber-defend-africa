@@ -1,0 +1,22 @@
+{% extends "instructor/base.html" %}
+{% block title %}Students · Instructor{% endblock %}
+{% block instructor_content %}
+<h1 class="h4 mb-4">Students</h1>
+<div class="table-responsive cda-surface">
+  <table class="table table-dark align-middle mb-0">
+    <thead><tr><th>Student</th><th>Course</th><th>Progress</th><th>Status</th></tr></thead>
+    <tbody>
+      {% for enrollment in enrollments %}
+      <tr>
+        <td>{{ enrollment.student.full_name }}</td>
+        <td>{{ enrollment.course.title }}</td>
+        <td>{{ enrollment.progress_percentage }}%</td>
+        <td><span class="badge text-bg-secondary">{{ enrollment.get_status_display }}</span></td>
+      </tr>
+      {% empty %}
+      <tr><td colspan="4" class="text-secondary text-center py-4">No students enrolled in your courses yet.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

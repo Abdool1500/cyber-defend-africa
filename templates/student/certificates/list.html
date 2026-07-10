@@ -1,0 +1,19 @@
+{% extends "student/base.html" %}
+{% block title %}Certificates · Student{% endblock %}
+{% block student_content %}
+<h1 class="h4 mb-4">Certificates</h1>
+<div class="row g-3">
+  {% for certificate in certificates %}
+  <div class="col-md-4">
+    <div class="cda-surface p-3 h-100">
+      <p class="mb-1 fw-semibold">{{ certificate.course.title }}</p>
+      <p class="text-secondary small mb-1">Certificate #{{ certificate.certificate_number }}</p>
+      <p class="text-secondary small mb-2">Issued {{ certificate.issued_at|date:"Y-m-d" }}</p>
+      <a href="{% url 'certificates:verify' certificate.verification_code %}" class="btn btn-sm btn-outline-light">View Verification Page</a>
+    </div>
+  </div>
+  {% empty %}
+  <p class="text-secondary">No certificates issued yet — complete a course to earn one.</p>
+  {% endfor %}
+</div>
+{% endblock %}

@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container-fluid py-4">
+  <div class="row">
+    <div class="col-lg-2 mb-4">
+      <div class="d-lg-none mb-3">
+        <button class="btn btn-outline-light w-100" type="button" data-bs-toggle="offcanvas" data-bs-target="#managementNav">
+          <i class="bi bi-list"></i> Dashboard Menu
+        </button>
+      </div>
+      <div class="offcanvas-lg offcanvas-start text-bg-dark" id="managementNav">
+        <div class="offcanvas-header d-lg-none">
+          <h5 class="offcanvas-title">Management</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas"></button>
+        </div>
+        <div class="offcanvas-body d-block p-0">
+          <div class="cda-surface p-3">
+            <nav class="nav flex-column gap-1">
+              <a class="nav-link text-light" href="{% url 'management:overview' %}">Overview</a>
+              <a class="nav-link text-light" href="/admin/">Django Admin</a>
+              <a class="nav-link text-light" href="{% url 'accounts:profile' %}">Profile</a>
+            </nav>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-lg-10">
+      {% block management_content %}{% endblock %}
+    </div>
+  </div>
+</div>
+{% endblock %}

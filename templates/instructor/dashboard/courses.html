@@ -1,0 +1,17 @@
+{% extends "instructor/base.html" %}
+{% block title %}Assigned Courses · Instructor{% endblock %}
+{% block instructor_content %}
+<h1 class="h4 mb-4">Assigned Courses</h1>
+<div class="row g-3">
+  {% for assignment in assignments %}
+  <div class="col-md-4">
+    <div class="cda-surface p-3">
+      <p class="mb-1 fw-semibold">{{ assignment.course.title }}</p>
+      <p class="text-secondary small mb-0">Assigned {{ assignment.assigned_at|date:"Y-m-d" }}</p>
+    </div>
+  </div>
+  {% empty %}
+  <p class="text-secondary">No courses assigned to you yet.</p>
+  {% endfor %}
+</div>
+{% endblock %}

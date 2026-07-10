@@ -1,0 +1,66 @@
+{% extends "student/base.html" %}
+{% load static %}
+{% block title %}{{ attempt.quiz.title }} · Attempt{% endblock %}
+{% block student_content %}
+<div id="quiz-attempt-root" data-attempt-id="{{ attempt.id }}" {% if attempt.expires_at %}data-expires-at="{{ attempt.expires_at|date:'c' }}"{% endif %}>
+  {% csrf_token %}
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h1 class="h4 mb-0">{{ attempt.quiz.title }}</h1>
+    {% if attempt.expires_at %}
+    <div class="cda-surface px-3 py-2">Time remaining: <strong id="quiz-timer">--:--</strong></div>
+    {% endif %}
+  </div>
+
+  <div class="row">
+    <div class="col-lg-3 mb-3">
+      <div class="cda-surface p-3">
+        <h2 class="h6">Questions</h2>
+        <div class="d-flex flex-wrap gap-1">
+          {% for entry in attempt_questions %}
+          <button type="button" class="btn btn-sm btn-outline-light question-nav-item">{{ forloop.counter }}</button>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+
+    <div class="col-lg-9">
+      {% for entry in attempt_questions %}
+      <div class="attempt-question cda-surface p-4 mb-3 {% if not forloop.first %}d-none{% endif %}"
+           data-attempt-question-id="{{ entry.attempt_question.id }}">
+        <p class="text-secondary small mb-1">Question {{ forloop.counter }} of {{ attempt_questions|length }} · {{ entry.attempt_question.points }} point(s)</p>
+        <p class="mb-3">{{ entry.attempt_question.question.question_text }}</p>
+
+        {% if entry.attempt_question.question.question_type == 'short_answer' %}
+        <textarea class="form-control" rows="4" placeholder="Type your answer here">{{ entry.text_answer }}</textarea>
+        {% elif entry.attempt_question.question.question_type == 'multiple_select' %}
+        {% for option in entry.options %}
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" value="{{ option.id }}" id="opt-{{ option.id }}" {% if option.id in entry.selected_ids %}checked{% endif %}>
+          <label class="form-check-label" for="opt-{{ option.id }}">{{ option.option_text }}</label>
+        </div>
+        {% endfor %}
+        {% else %}
+        {% for option in entry.options %}
+        <div class="form-check">
+          <input class="form-check-input" type="radio" name="q-{{ entry.attempt_question.id }}" value="{{ option.id }}" id="opt-{{ option.id }}" {% if option.id in entry.selected_ids %}checked{% endif %}>
+          <label class="form-check-label" for="opt-{{ option.id }}">{{ option.option_text }}</label>
+        </div>
+        {% endfor %}
+        {% endif %}
+
+        <p class="small text-secondary mt-2 mb-0" data-save-status="{{ entry.attempt_question.id }}"></p>
+      </div>
+      {% endfor %}
+
+      <div class="d-flex justify-content-between">
+        <button type="button" id="btn-prev" class="btn btn-outline-light">Previous</button>
+        <button type="button" id="btn-next" class="btn btn-outline-light">Next</button>
+        <button type="button" id="btn-submit" class="btn btn-cda-primary">Submit Quiz</button>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+{% block extra_scripts %}
+<script src="{% static 'js/quiz_attempt.js' %}"></script>
+{% endblock %}

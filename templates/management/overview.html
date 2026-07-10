@@ -1,0 +1,26 @@
+{% extends "management/base.html" %}
+{% block title %}Management Overview{% endblock %}
+{% block management_content %}
+<h1 class="h4 mb-1">Management Overview</h1>
+<p class="text-secondary mb-4">Platform-wide statistics. Use Django Admin for detailed record management.</p>
+
+<div class="row g-3 mb-4">
+  <div class="col-md-3"><div class="cda-surface p-3"><div class="text-secondary small">Students</div><div class="h4 mb-0">{{ stats.total_students }}</div></div></div>
+  <div class="col-md-3"><div class="cda-surface p-3"><div class="text-secondary small">Instructors</div><div class="h4 mb-0">{{ stats.total_instructors }}</div></div></div>
+  <div class="col-md-3"><div class="cda-surface p-3"><div class="text-secondary small">Courses</div><div class="h4 mb-0">{{ stats.total_courses }}</div></div></div>
+  <div class="col-md-3"><div class="cda-surface p-3"><div class="text-secondary small">Enrollments</div><div class="h4 mb-0">{{ stats.total_enrollments }}</div></div></div>
+</div>
+
+<h2 class="h6 mb-3">Leads &amp; Requests</h2>
+<div class="row g-3">
+  <div class="col-md-3"><div class="cda-surface p-3"><div class="text-secondary small">Contact Submissions</div><div class="h4 mb-0">{{ stats.new_contact_submissions }}</div></div></div>
+  <div class="col-md-3"><div class="cda-surface p-3"><div class="text-secondary small">New Demo Requests</div><div class="h4 mb-0">{{ stats.new_demo_requests }}</div></div></div>
+  <div class="col-md-3"><div class="cda-surface p-3"><div class="text-secondary small">New Pilot Requests</div><div class="h4 mb-0">{{ stats.new_pilot_requests }}</div></div></div>
+  <div class="col-md-3"><div class="cda-surface p-3"><div class="text-secondary small">New Consultation Requests</div><div class="h4 mb-0">{{ stats.new_consultation_requests }}</div></div></div>
+</div>
+
+<div class="cda-surface p-4 mt-4">
+  <p class="mb-2">For detailed record management (users, courses, enrollments, question bank, quizzes, assignments, feedback, certificates, leads, resources, audit logs), use the Django Admin — it's configured with search, filters, and role-safe fields for every core model.</p>
+  <a href="/admin/" class="btn btn-cda-primary">Open Django Admin</a>
+</div>
+{% endblock %}
