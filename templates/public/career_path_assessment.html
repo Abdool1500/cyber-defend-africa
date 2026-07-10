@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Career Path Assessment · Cyber Defend Africa Academy{% endblock %}
+{% block content %}
+<div class="container py-5" style="max-width: 640px;">
+  <h1 class="h4 mb-2">Career Path Assessment</h1>
+  <p class="text-secondary mb-4">Answer a couple of quick questions and we'll suggest which Academy track might fit you best.</p>
+
+  <form id="assessment-form" class="cda-surface p-4">
+    <div id="assessment-questions"></div>
+    <button type="submit" class="btn btn-cda-primary mt-2">Get My Recommendation</button>
+  </form>
+
+  <div id="assessment-result" class="cda-surface p-4 mt-4 d-none">
+    <h2 class="h6" id="assessment-result-title"></h2>
+    <p class="text-secondary small mb-0">This is guidance, not a career guarantee — talk to us if you'd like help deciding.</p>
+  </div>
+</div>
+{% endblock %}
+{% block extra_scripts %}
+<script src="{% static 'js/modules/career_assessment.js' %}"></script>
+<script>
+(function () {
+  const { QUESTIONS, scoreAssessment } = window.CareerAssessment;
+  const questionsEl = document.getElementById("assessment-questions");
+
+  QUESTIONS.forEach((question) => {
+    const wrapper = document.createElement("fieldset");
+    wrapper.className = "mb-4";
+    const legend = document.createElement("legend");
+    legend.className = "h6";
+    legend.textContent = question.prompt;
+    wrapper.appendChild(legend);
+    question.options.forEach((option) => {
+      const div = document.createElement("div");
+      div.className = "form-check";
+      div.innerHTML = `
+        <input class="form-check-input" type="radio" name="${question.id}" value="${option.value}" id="${question.id}-${option.value}">
+        <label class="form-check-label" for="${question.id}-${option.value}">${option.value.replace(/_/g, " ")}</label>
+      `;
+      wrapper.appendChild(div);
+    });
+    questionsEl.appendChild(wrapper);
+  });
+
+  document.getElementById("assessment-form").addEventListener("submit", function (e) {
+    e.preventDefault();
+    const formData = new FormData(e.target);
+    const answers = {};
+    QUESTIONS.forEach((q) => {
+      const value = formData.get(q.id);
+      if (value) answers[q.id] = value;
+    });
+    const result = scoreAssessment(answers);
+    const resultEl = document.getElementById("assessment-result");
+    const titleEl = document.getElementById("assessment-result-title");
+    resultEl.classList.remove("d-none");
+    if (result.recommendedLabels.length === 0) {
+      titleEl.textContent = "Please answer at least one question to get a recommendation.";
+    } else if (result.isTie) {
+      titleEl.textContent = "You're a strong fit for: " + result.recommendedLabels.join(" and ");
+    } else {
+      titleEl.textContent = "Recommended track: " + result.recommendedLabels[0];
+    }
+  });
+})();
+</script>
+{% endblock %}

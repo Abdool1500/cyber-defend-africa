@@ -1,4 +1,8 @@
-from django.shortcuts import get_object_or_404, render
+from django.contrib import messages
+from django.shortcuts import get_object_or_404, redirect, render
+
+from apps.accounts.permissions import student_required
+from apps.enrollments.models import Enrollment
 
 from .models import Course
 
@@ -22,3 +26,13 @@ def course_detail(request, slug):
         "public/course_detail.html",
         {"course": course, "is_enrolled": is_enrolled},
     )
+
+
+@student_required
+def enroll(request, slug):
+    course = get_object_or_404(Course, slug=slug, status=Course.Status.PUBLISHED)
+    Enrollment.objects.get_or_create(
+        student=request.user, course=course, defaults={"status": Enrollment.Status.ACTIVE}
+    )
+    messages.success(request, f"You're enrolled in {course.title}.")
+    return redirect("student_learning:course_overview", course_id=course.id)

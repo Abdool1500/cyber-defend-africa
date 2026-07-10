@@ -8,9 +8,14 @@
     <p class="lead text-secondary">{{ course.short_description }}</p>
     <div class="d-flex flex-wrap gap-2 mt-3">
       {% if is_enrolled %}
-      <a href="{% url 'student:course_detail' course.id %}" class="btn btn-cda-primary">Continue Learning</a>
+      <a href="{% url 'student_learning:course_overview' course.id %}" class="btn btn-cda-primary">Continue Learning</a>
+      {% elif request.user.is_authenticated and request.user.is_student %}
+      <form method="post" action="{% url 'courses:enroll' course.slug %}">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-cda-primary">Enroll Now</button>
+      </form>
       {% elif request.user.is_authenticated %}
-      <span class="text-secondary small align-self-center">Enroll from your student dashboard to start this course.</span>
+      <span class="text-secondary small align-self-center">Log in as a student to enroll in this course.</span>
       {% else %}
       <a href="{% url 'accounts:register' %}" class="btn btn-cda-primary">Get Started</a>
       {% endif %}

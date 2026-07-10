@@ -20,3 +20,7 @@ class AcademyHomeView(TemplateView):
             "Progress Tracking",
         ]
         return context
+
+
+class CareerPathAssessmentView(TemplateView):
+    template_name = "public/career_path_assessment.html"

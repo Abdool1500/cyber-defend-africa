@@ -68,4 +68,9 @@ function scoreAssessment(answers) {
   };
 }
 
-module.exports = { TRACKS, QUESTIONS, TRACK_LABELS, scoreAssessment };
+const _exports = { TRACKS, QUESTIONS, TRACK_LABELS, scoreAssessment };
+if (typeof module !== "undefined" && module.exports) {
+  module.exports = _exports;
+} else {
+  window.CareerAssessment = _exports;
+}

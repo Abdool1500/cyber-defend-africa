@@ -1,0 +1,25 @@
+{% extends "student/base.html" %}
+{% block title %}{{ course.title }} · Learning{% endblock %}
+{% block student_content %}
+<h1 class="h4 mb-1">{{ course.title }}</h1>
+<p class="text-secondary small mb-4">{{ enrollment.progress_percentage }}% complete</p>
+
+{% for module in modules %}
+<div class="cda-surface p-3 mb-3">
+  <h2 class="h6 mb-2">{{ module.title }}</h2>
+  <ul class="list-group list-group-flush">
+    {% for lesson in module.lessons.all %}
+    <li class="list-group-item bg-transparent text-light d-flex justify-content-between align-items-center">
+      <span>
+        {% if lesson.id in completed_lesson_ids %}<i class="bi bi-check-circle-fill text-success"></i>{% else %}<i class="bi bi-circle text-secondary"></i>{% endif %}
+        {{ lesson.title }}
+      </span>
+      <a href="{% url 'student_learning:lesson_detail' course.id lesson.id %}" class="btn btn-sm btn-outline-light">Open</a>
+    </li>
+    {% endfor %}
+  </ul>
+</div>
+{% empty %}
+<p class="text-secondary">This course doesn't have published modules yet.</p>
+{% endfor %}
+{% endblock %}

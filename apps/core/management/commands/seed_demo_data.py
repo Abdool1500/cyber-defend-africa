@@ -3,6 +3,8 @@ from django.db import transaction
 from django.utils import timezone
 
 from apps.courses.models import Course, CourseModule, Lesson
+from apps.question_bank.models import Question, QuestionOption
+from apps.quizzes.models import Quiz, QuizQuestion
 
 COURSES = [
     {
@@ -119,4 +121,75 @@ class Command(BaseCommand):
                     },
                 )
 
+            self._seed_sample_quiz(course)
+
         self.stdout.write(self.style.SUCCESS("Demo data seeded successfully."))
+
+    def _seed_sample_quiz(self, course):
+        """One question of each type + a published quiz combining them,
+        so every course has a working end-to-end quiz to demo/test with."""
+        mc_question, _ = Question.objects.update_or_create(
+            course=course, question_text=f"Which of these best describes {course.title}?",
+            defaults={
+                "topic": "Foundations", "question_type": Question.QuestionType.MULTIPLE_CHOICE,
+                "difficulty": Question.Difficulty.EASY, "default_points": 1,
+                "status": Question.Status.PUBLISHED,
+                "explanation": "This introductory question checks basic course orientation.",
+            },
+        )
+        if not mc_question.options.exists():
+            QuestionOption.objects.create(question=mc_question, option_text="A hands-on cybersecurity course", is_correct=True, display_order=1)
+            QuestionOption.objects.create(question=mc_question, option_text="A cooking class", is_correct=False, display_order=2)
+
+        ms_question, _ = Question.objects.update_or_create(
+            course=course, question_text="Select all topics covered in this course.",
+            defaults={
+                "topic": "Foundations", "question_type": Question.QuestionType.MULTIPLE_SELECT,
+                "difficulty": Question.Difficulty.MEDIUM, "default_points": 2,
+                "status": Question.Status.PUBLISHED,
+            },
+        )
+        if not ms_question.options.exists():
+            QuestionOption.objects.create(question=ms_question, option_text=course.category, is_correct=True, display_order=1)
+            QuestionOption.objects.create(question=ms_question, option_text="Practical labs", is_correct=True, display_order=2)
+            QuestionOption.objects.create(question=ms_question, option_text="Unrelated cuisine techniques", is_correct=False, display_order=3)
+
+        tf_question, _ = Question.objects.update_or_create(
+            course=course, question_text=f"{course.title} includes hands-on practical labs.",
+            defaults={
+                "topic": "Foundations", "question_type": Question.QuestionType.TRUE_FALSE,
+                "difficulty": Question.Difficulty.EASY, "default_points": 1,
+                "status": Question.Status.PUBLISHED,
+            },
+        )
+        if not tf_question.options.exists():
+            QuestionOption.objects.create(question=tf_question, option_text="True", is_correct=True, display_order=1)
+            QuestionOption.objects.create(question=tf_question, option_text="False", is_correct=False, display_order=2)
+
+        sa_question, _ = Question.objects.update_or_create(
+            course=course, question_text="In one or two sentences, describe a key skill you expect to gain from this course.",
+            defaults={
+                "topic": "Foundations", "question_type": Question.QuestionType.SHORT_ANSWER,
+                "difficulty": Question.Difficulty.MEDIUM, "default_points": 2,
+                "status": Question.Status.PUBLISHED,
+                "grading_guidance": "Award full points for any relevant, course-related skill.",
+            },
+        )
+
+        quiz, _ = Quiz.objects.update_or_create(
+            course=course, title=f"{course.title} — Foundations Check",
+            defaults={
+                "description": "A short quiz covering the foundational module of this course.",
+                "instructions": "Answer all questions. Short-answer responses are reviewed manually.",
+                "status": Quiz.Status.PUBLISHED,
+                "attempt_limit": 3,
+                "passing_score": 60,
+                "shuffle_questions": True,
+                "shuffle_options": True,
+                "show_score_after_submission": True,
+                "show_correct_answers": True,
+                "show_explanations": True,
+            },
+        )
+        for order, question in enumerate([mc_question, ms_question, tf_question, sa_question], start=1):
+            QuizQuestion.objects.update_or_create(quiz=quiz, question=question, defaults={"display_order": order})

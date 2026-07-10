@@ -1,0 +1,10 @@
+User-agent: *
+Disallow: /accounts/
+Disallow: /student/
+Disallow: /instructor/
+Disallow: /management/
+Disallow: /api/
+Disallow: /admin/
+Allow: /
+
+Sitemap: {{ SITE_URL }}/sitemap.xml

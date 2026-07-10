@@ -142,6 +142,9 @@ def quiz_publish(request, quiz_id):
 
     quiz.status = Quiz.Status.PUBLISHED
     quiz.save(update_fields=["status", "updated_at"])
+    from apps.audit.services import log_action
+
+    log_action(request.user, "quiz.publish", quiz)
     messages.success(request, "Quiz published.")
     return redirect("instructor_quizzes:edit", quiz_id=quiz.id)
 
@@ -202,6 +205,9 @@ def grading_detail(request, attempt_id):
         if "finalize" in request.POST:
             try:
                 finalize_manual_grade(attempt, request.user)
+                from apps.audit.services import log_action
+
+                log_action(request.user, "quiz_attempt.grade_finalize", attempt, {"score": attempt.score})
                 messages.success(request, "Attempt finalized and score updated.")
             except ValueError as exc:
                 messages.error(request, str(exc))

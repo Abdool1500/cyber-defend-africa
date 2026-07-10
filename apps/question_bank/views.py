@@ -97,6 +97,9 @@ def question_create(request):
                 if needs_options:
                     formset.instance = question
                     formset.save()
+                from apps.audit.services import log_action
+
+                log_action(request.user, "question.create", question, {"course_id": str(question.course_id)})
                 messages.success(request, "Question created.")
                 return redirect("instructor_question_bank:list")
             except Exception as exc:
@@ -129,6 +132,9 @@ def question_edit(request, question_id):
                 form.save()
                 if needs_options:
                     formset.save()
+                from apps.audit.services import log_action
+
+                log_action(request.user, "question.edit", question)
                 messages.success(request, "Question updated.")
                 return redirect("instructor_question_bank:list")
             except Exception as exc:

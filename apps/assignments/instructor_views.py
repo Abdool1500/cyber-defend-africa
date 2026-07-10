@@ -85,6 +85,9 @@ def submission_grade(request, assignment_id, submission_id):
             submission.graded_at = timezone.now()
             submission.status = AssignmentSubmission.Status.GRADED
             submission.save()
+            from apps.audit.services import log_action
+
+            log_action(request.user, "assignment_submission.grade", submission, {"score": submission.score})
             messages.success(request, "Submission graded.")
             return redirect("instructor_assignments:submissions", assignment_id=assignment.id)
     else:

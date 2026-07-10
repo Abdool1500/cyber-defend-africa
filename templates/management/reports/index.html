@@ -1,0 +1,25 @@
+{% extends "management/base.html" %}
+{% block title %}Reports · Management{% endblock %}
+{% block management_content %}
+<h1 class="h4 mb-4">Reports</h1>
+<div class="row g-3">
+  <div class="col-md-4">
+    <div class="cda-surface p-3">
+      <p class="mb-2">Enrollment Report</p>
+      <a href="{% url 'reports:export_enrollments_csv' %}" class="btn btn-outline-light btn-sm">Export CSV</a>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="cda-surface p-3">
+      <p class="mb-2">Leads Report (Contact, Demo, Pilot, Consultation)</p>
+      <a href="{% url 'reports:export_leads_csv' %}" class="btn btn-outline-light btn-sm">Export CSV</a>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="cda-surface p-3">
+      <p class="mb-2">Feedback Report</p>
+      <p class="text-secondary small">Available from the instructor Feedback → Analytics page for assigned courses.</p>
+    </div>
+  </div>
+</div>
+{% endblock %}
