@@ -45,3 +45,4 @@ junit.xml
 
 # Jest
 coverage/
+.claude/
