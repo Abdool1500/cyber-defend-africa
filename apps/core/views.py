@@ -18,9 +18,9 @@ def health_check(request):
 def post_login_redirect(request):
     role = getattr(request.user, "role", None)
     if role == "student":
-        return redirect("student:overview")
+        return redirect("student_dashboard:overview")
     if role == "instructor":
-        return redirect("instructor:overview")
+        return redirect("instructor_dashboard:overview")
     if role in ("admin", "super_admin"):
         return redirect("management:overview")
     return redirect("core:home")

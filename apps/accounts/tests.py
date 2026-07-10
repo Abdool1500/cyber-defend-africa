@@ -88,3 +88,15 @@ class RoleBoundaryTests(TestCase):
         self.client.login(username="student@example.com", password="pass1234")
         response = self.client.get(reverse("student_dashboard:overview"))
         self.assertEqual(response.status_code, 403)
+
+    def test_post_login_redirect_sends_each_role_to_its_own_dashboard(self):
+        cases = [
+            ("student@example.com", reverse("student_dashboard:overview")),
+            ("instructor@example.com", reverse("instructor_dashboard:overview")),
+            ("admin@example.com", reverse("management:overview")),
+        ]
+        for email, expected_url in cases:
+            self.client.login(username=email, password="pass1234")
+            response = self.client.get(reverse("core:post_login_redirect"))
+            self.assertRedirects(response, expected_url)
+            self.client.logout()
