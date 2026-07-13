@@ -1,21 +1,39 @@
 {% extends "base.html" %}
+{% load cda_extras %}
 {% block title %}Your profile · Cyber Defend Africa{% endblock %}
 {% block content %}
-<div class="container py-5" style="max-width: 480px;">
-  <h1 class="h3 mb-4">Your profile</h1>
-  <form method="post" novalidate>
-    {% csrf_token %}
-    {% for field in form %}
-    <div class="mb-3">
-      <label class="form-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
-      {{ field }}
-      {% for error in field.errors %}
-      <div class="text-danger small mt-1">{{ error }}</div>
-      {% endfor %}
+<div class="container py-5" style="max-width: 560px;">
+  <div class="cda-surface p-4 p-md-5">
+    <div class="d-flex align-items-center gap-3 mb-4">
+      <div class="cda-avatar">{{ user.full_name|initials }}</div>
+      <div>
+        <h1 class="h4 mb-1">{{ user.full_name }}</h1>
+        <span class="badge text-bg-info">{{ user.get_role_display }}</span>
+        <p class="text-secondary small mb-0 mt-1"><i class="bi bi-envelope me-1"></i>{{ user.email }}</p>
+      </div>
     </div>
-    {% endfor %}
-    <button type="submit" class="btn btn-cda-primary w-100">Save changes</button>
-  </form>
-  <a href="{% url 'accounts:password_change' %}" class="d-inline-block mt-3 small">Change password</a>
+
+    <hr class="border-secondary">
+
+    <h2 class="h6 text-secondary text-uppercase mt-4 mb-3">Edit Profile</h2>
+    <form method="post" novalidate>
+      {% csrf_token %}
+      {% for field in form %}
+      <div class="mb-3">
+        <label class="form-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
+        {{ field }}
+        {% for error in field.errors %}
+        <div class="text-danger small mt-1">{{ error }}</div>
+        {% endfor %}
+      </div>
+      {% endfor %}
+      <button type="submit" class="btn btn-cda-primary w-100">
+        <i class="bi bi-check-circle me-1"></i>Save changes
+      </button>
+    </form>
+    <a href="{% url 'accounts:password_change' %}" class="d-inline-block mt-3 small">
+      <i class="bi bi-key me-1"></i>Change password
+    </a>
+  </div>
 </div>
 {% endblock %}

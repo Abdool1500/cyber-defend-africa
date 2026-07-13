@@ -8,9 +8,17 @@
       Cyber Defend Africa LTD develops AI-powered security innovation, practical cybersecurity solutions, and career-focused training designed to help organizations and individuals strengthen digital resilience.
     </p>
     <div class="d-flex flex-wrap justify-content-center gap-2 mt-4">
-      <a href="{% url 'company:solutions' %}" class="btn btn-cda-primary btn-lg">Explore Our Solutions</a>
+      {% if request.user.is_authenticated %}
+      <a href="{% url 'core:post_login_redirect' %}" class="btn btn-cda-primary btn-lg">
+        <i class="bi bi-speedometer2 me-1"></i>Go To Dashboard
+      </a>
+      {% else %}
+      <a href="{% url 'accounts:register' %}" class="btn btn-cda-primary btn-lg">
+        <i class="bi bi-mortarboard me-1"></i>Enroll Now
+      </a>
+      {% endif %}
       {% include "includes/waitlist_button.html" with css_class="btn-outline-light btn-lg" %}
-      <a href="{% url 'academy:home' %}" class="btn btn-outline-light btn-lg">Discover Our Academy</a>
+      <a href="#what-we-do" class="btn btn-outline-light btn-lg">Learn More</a>
     </div>
   </div>
 </section>
@@ -38,7 +46,7 @@
   </div>
 </section>
 
-<section class="container py-5">
+<section class="container py-5 scroll-target" id="what-we-do">
   <h2 class="h4 mb-3">What We Do</h2>
   <p class="text-secondary" style="max-width: 760px;">
     Cyber Defend Africa LTD combines AI-powered security innovation, practical cybersecurity services, and structured

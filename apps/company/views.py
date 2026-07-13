@@ -1,7 +1,7 @@
 from django.conf import settings
 from django.views.generic import TemplateView
 
-from .data import SERVICES, SOLUTIONS
+from .data import PRICING_PLANS, SERVICES, SOLUTIONS
 
 GPT_SENTINEL_STAGE_LABELS = {
     "development": "In Development",
@@ -74,6 +74,15 @@ class ServicesView(TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["services"] = SERVICES
+        return context
+
+
+class PricingView(TemplateView):
+    template_name = "public/pricing.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["plans"] = PRICING_PLANS
         return context
 
 

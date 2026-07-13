@@ -9,6 +9,7 @@ urlpatterns = [
     path("solutions/", views.SolutionsView.as_view(), name="solutions"),
     path("gpt-sentinel/", views.GPTSentinelView.as_view(), name="gpt_sentinel"),
     path("services/", views.ServicesView.as_view(), name="services"),
+    path("pricing/", views.PricingView.as_view(), name="pricing"),
     path("privacy/", views.PrivacyView.as_view(), name="privacy"),
     path("terms/", views.TermsView.as_view(), name="terms"),
     path("cookies/", views.CookiesView.as_view(), name="cookies"),

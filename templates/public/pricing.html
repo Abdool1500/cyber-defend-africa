@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block title %}Pricing · Cyber Defend Africa{% endblock %}
+{% block content %}
+<div class="cda-gradient-hero py-5">
+  <div class="container py-4">
+    <h1 class="display-6 fw-bold">Pricing</h1>
+    <p class="lead text-secondary">Plans for individual learners, career changers, and organizations.</p>
+  </div>
+</div>
+<div class="container py-5">
+  <div class="row g-4">
+    {% for plan in plans %}
+    <div class="col-lg-4">
+      <div class="cda-surface p-4 h-100 d-flex flex-column {% if plan.highlighted %}border-cda-electric{% endif %}">
+        {% if plan.highlighted %}<span class="badge text-bg-info mb-2 align-self-start">Most Popular</span>{% endif %}
+        <h2 class="h5">{{ plan.name }}</h2>
+        <p class="display-6 fw-bold mb-0">{{ plan.price }}</p>
+        <p class="text-secondary small mb-3">{{ plan.tagline }}</p>
+        <ul class="list-unstyled small text-secondary mb-4 flex-grow-1">
+          {% for feature in plan.features %}
+          <li class="mb-2"><i class="bi bi-check-circle-fill text-info me-2"></i>{{ feature }}</li>
+          {% endfor %}
+        </ul>
+        {% if plan.cta_url_name %}
+        <a href="{% url plan.cta_url_name %}" class="btn {% if plan.highlighted %}btn-cda-primary{% else %}btn-outline-light{% endif %} mt-auto">{{ plan.cta_label }}</a>
+        {% else %}
+        {% include "includes/waitlist_button.html" with css_class=plan.highlighted|yesno:"btn-cda-primary,btn-outline-light" %}
+        {% endif %}
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  <p class="text-secondary small mt-4">Need something custom? <a href="{% url 'leads:contact' %}">Get in touch</a> and we'll help you find the right fit.</p>
+</div>
+{% endblock %}

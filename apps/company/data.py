@@ -115,3 +115,51 @@ SERVICES = [
         "process": "Needs assessment, tailored curriculum, hands-on delivery.",
     },
 ]
+
+PRICING_PLANS = [
+    {
+        "name": "Community",
+        "price": "Free",
+        "tagline": "Start learning with a free student account.",
+        "features": [
+            "Self-registration in minutes",
+            "Access to published courses",
+            "Quizzes and assignments",
+            "Progress tracking dashboard",
+            "Certificates on course completion",
+        ],
+        "cta_label": "Create Free Account",
+        "cta_url_name": "accounts:register",
+        "highlighted": False,
+    },
+    {
+        "name": "Academy Pro",
+        "price": "Contact Us",
+        "tagline": "Structured, career-focused training paths with instructor support.",
+        "features": [
+            "Everything in Community",
+            "Full career-track learning paths",
+            "Instructor feedback and grading",
+            "Priority support",
+            "Early access to new cohorts",
+        ],
+        "cta_label": "Join Waitlist",
+        "cta_url_name": None,
+        "highlighted": True,
+    },
+    {
+        "name": "Enterprise & Teams",
+        "price": "Contact Us",
+        "tagline": "Custom training and security services for organizations.",
+        "features": [
+            "Team enrollment and reporting",
+            "Custom curriculum options",
+            "GPT Sentinel pilot access",
+            "Dedicated cybersecurity services",
+            "Direct account management",
+        ],
+        "cta_label": "Contact Sales",
+        "cta_url_name": "leads:contact",
+        "highlighted": False,
+    },
+]

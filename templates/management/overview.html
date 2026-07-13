@@ -11,6 +11,47 @@
   <div class="col-md-3"><div class="cda-surface p-3"><div class="text-secondary small">Enrollments</div><div class="h4 mb-0">{{ stats.total_enrollments }}</div></div></div>
 </div>
 
+<h2 class="h6 mb-3">Quick Access</h2>
+<div class="row g-3 mb-4">
+  <div class="col-6 col-md-4 col-lg-2">
+    <a href="{% url 'admin:accounts_user_changelist' %}" class="cda-surface cda-quick-link p-3 d-block text-center text-decoration-none h-100">
+      <i class="bi bi-people fs-3 text-info d-block mb-2"></i>
+      <span class="small text-light">Users</span>
+    </a>
+  </div>
+  <div class="col-6 col-md-4 col-lg-2">
+    <a href="{% url 'admin:courses_course_changelist' %}" class="cda-surface cda-quick-link p-3 d-block text-center text-decoration-none h-100">
+      <i class="bi bi-collection-play fs-3 text-info d-block mb-2"></i>
+      <span class="small text-light">Courses</span>
+    </a>
+  </div>
+  <div class="col-6 col-md-4 col-lg-2">
+    <a href="{% url 'reports:index' %}" class="cda-surface cda-quick-link p-3 d-block text-center text-decoration-none h-100">
+      <i class="bi bi-graph-up fs-3 text-info d-block mb-2"></i>
+      <span class="small text-light">Analytics</span>
+    </a>
+  </div>
+  <div class="col-6 col-md-4 col-lg-2">
+    <a href="{% url 'company:gpt_sentinel' %}" class="cda-surface cda-quick-link p-3 d-block text-center text-decoration-none h-100">
+      <i class="bi bi-cpu fs-3 text-info d-block mb-2"></i>
+      <span class="small text-light">GPT Sentinel</span>
+    </a>
+  </div>
+  <div class="col-6 col-md-4 col-lg-2">
+    <a href="{% url 'academy:home' %}" class="cda-surface cda-quick-link p-3 d-block text-center text-decoration-none h-100">
+      <i class="bi bi-mortarboard fs-3 text-info d-block mb-2"></i>
+      <span class="small text-light">Academy</span>
+    </a>
+  </div>
+  <div class="col-6 col-md-4 col-lg-2">
+    <div class="cda-surface p-3 text-center h-100 opacity-50" title="Revenue — coming soon">
+      <i class="bi bi-cash-coin fs-3 text-secondary d-block mb-2"></i>
+      <span class="small text-secondary d-block">Revenue</span>
+      <span class="badge text-bg-secondary mt-1">Coming Soon</span>
+    </div>
+  </div>
+</div>
+
 <h2 class="h6 mb-3">Leads &amp; Requests</h2>
 <div class="row g-3">
   <div class="col-md-3"><div class="cda-surface p-3"><div class="text-secondary small">Contact Submissions</div><div class="h4 mb-0">{{ stats.new_contact_submissions }}</div></div></div>

@@ -40,6 +40,12 @@ class AccountLoginView(LoginView):
     authentication_form = EmailAuthenticationForm
     redirect_authenticated_user = True
 
+    def form_valid(self, form):
+        response = super().form_valid(form)
+        if not form.cleaned_data.get("remember_me"):
+            self.request.session.set_expiry(0)
+        return response
+
 
 class AccountLogoutView(LogoutView):
     next_page = "core:home"

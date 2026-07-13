@@ -15,6 +15,12 @@ body {
   font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
 }
 
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
 a {
   color: var(--cda-cyan);
 }
@@ -23,6 +29,32 @@ a {
   background-color: var(--cda-surface);
   border: 1px solid var(--cda-border);
   border-radius: 0.75rem;
+  animation: cda-fade-in-up 0.4s ease both;
+}
+
+@keyframes cda-fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.cda-gradient-hero h1,
+.cda-gradient-hero .lead,
+.cda-gradient-hero .btn {
+  animation: cda-fade-in-up 0.6s ease both;
+}
+
+.cda-gradient-hero .lead {
+  animation-delay: 0.1s;
+}
+
+.cda-gradient-hero .btn {
+  animation-delay: 0.2s;
 }
 
 .cda-navbar {
@@ -45,6 +77,38 @@ a {
   background-color: var(--cda-cyan);
   border-color: var(--cda-cyan);
   color: var(--cda-navy);
+}
+
+.border-cda-electric {
+  border-color: var(--cda-electric) !important;
+  border-width: 2px !important;
+}
+
+.scroll-target {
+  scroll-margin-top: 90px;
+}
+
+.cda-quick-link {
+  transition: transform 0.15s ease, border-color 0.15s ease;
+}
+
+.cda-quick-link:hover {
+  transform: translateY(-2px);
+  border-color: var(--cda-electric);
+}
+
+.cda-avatar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 4rem;
+  height: 4rem;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--cda-electric), var(--cda-cyan));
+  color: #fff;
+  font-weight: 600;
+  font-size: 1.25rem;
+  flex-shrink: 0;
 }
 
 @media (prefers-reduced-motion: reduce) {

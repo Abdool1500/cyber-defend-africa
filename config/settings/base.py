@@ -8,6 +8,7 @@ modules via DJANGO_SETTINGS_MODULE.
 from pathlib import Path
 
 import environ
+from django.contrib.messages import constants as messages_constants
 
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
@@ -132,6 +133,13 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 LOGIN_URL = "accounts:login"
 LOGIN_REDIRECT_URL = "core:post_login_redirect"
 LOGOUT_REDIRECT_URL = "core:home"
+
+# Django's default tag for messages.error() is "error", but Bootstrap 5 has
+# no .alert-error/.text-bg-error class (only .alert-danger) — map it so
+# error messages actually render styled instead of falling back unstyled.
+MESSAGE_TAGS = {
+    messages_constants.ERROR: "danger",
+}
 
 # --- Supabase ---------------------------------------------------------
 # SUPABASE_URL and SUPABASE_ANON_KEY are safe to reference from server-side

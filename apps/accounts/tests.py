@@ -5,17 +5,33 @@ from .models import User
 
 
 class PublicRegistrationTests(TestCase):
+    valid_payload = {
+        "first_name": "New",
+        "last_name": "Student",
+        "email": "newstudent@example.com",
+        "phone": "+2348000000000",
+        "country": "Nigeria",
+        "password1": "SuperSecret123!",
+        "password2": "SuperSecret123!",
+        "agree_terms": "on",
+    }
+
     def test_registration_creates_student_role(self):
-        response = self.client.post(reverse("accounts:register"), {
-            "full_name": "New Student",
-            "email": "newstudent@example.com",
-            "password1": "SuperSecret123!",
-            "password2": "SuperSecret123!",
-        })
+        response = self.client.post(reverse("accounts:register"), self.valid_payload)
         self.assertEqual(response.status_code, 302)
         user = User.objects.get(email="newstudent@example.com")
         self.assertEqual(user.role, User.Role.STUDENT)
         self.assertEqual(user.status, User.Status.ACTIVE)
+        self.assertEqual(user.full_name, "New Student")
+        self.assertEqual(user.phone, "+2348000000000")
+        self.assertEqual(user.country, "Nigeria")
+
+    def test_registration_requires_agree_terms(self):
+        payload = {**self.valid_payload, "email": "noterms@example.com"}
+        del payload["agree_terms"]
+        response = self.client.post(reverse("accounts:register"), payload)
+        self.assertEqual(response.status_code, 200)
+        self.assertFalse(User.objects.filter(email="noterms@example.com").exists())
 
     def test_registration_form_has_no_role_field(self):
         """Role must never be selectable at public registration — this is
@@ -26,13 +42,8 @@ class PublicRegistrationTests(TestCase):
     def test_registration_cannot_set_role_via_post_injection(self):
         """Even if a crafted request includes a `role` field, the
         ModelForm doesn't declare it, so it's silently ignored."""
-        self.client.post(reverse("accounts:register"), {
-            "full_name": "Sneaky User",
-            "email": "sneaky@example.com",
-            "password1": "SuperSecret123!",
-            "password2": "SuperSecret123!",
-            "role": "super_admin",
-        })
+        payload = {**self.valid_payload, "email": "sneaky@example.com", "role": "super_admin"}
+        self.client.post(reverse("accounts:register"), payload)
         user = User.objects.get(email="sneaky@example.com")
         self.assertEqual(user.role, User.Role.STUDENT)
 

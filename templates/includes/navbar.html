@@ -12,21 +12,35 @@
       <div class="offcanvas-body">
         <ul class="navbar-nav flex-grow-1 me-auto mb-2 mb-lg-0">
           <li class="nav-item"><a class="nav-link" href="{% url 'core:home' %}">Home</a></li>
-          <li class="nav-item"><a class="nav-link" href="{% url 'company:about' %}">About</a></li>
-          <li class="nav-item"><a class="nav-link" href="{% url 'company:solutions' %}">Solutions</a></li>
-          <li class="nav-item"><a class="nav-link" href="{% url 'company:gpt_sentinel' %}">GPT Sentinel</a></li>
           <li class="nav-item"><a class="nav-link" href="{% url 'academy:home' %}">Academy</a></li>
           <li class="nav-item"><a class="nav-link" href="{% url 'courses:list' %}">Courses</a></li>
-          <li class="nav-item"><a class="nav-link" href="{% url 'company:services' %}">Services</a></li>
-          <li class="nav-item"><a class="nav-link" href="{% url 'resources:list' %}">Resources</a></li>
+          <li class="nav-item"><a class="nav-link" href="{% url 'company:gpt_sentinel' %}">GPT Sentinel</a></li>
+          <li class="nav-item"><a class="nav-link" href="{% url 'company:about' %}">About</a></li>
+          <li class="nav-item"><a class="nav-link" href="{% url 'company:pricing' %}">Pricing</a></li>
           <li class="nav-item"><a class="nav-link" href="{% url 'leads:contact' %}">Contact</a></li>
         </ul>
-        <div class="d-flex flex-column flex-lg-row gap-2">
-          {% include "includes/waitlist_button.html" with css_class="btn-cda-primary" %}
+        <div class="d-flex flex-column flex-lg-row gap-2 align-items-lg-center">
           {% if request.user.is_authenticated %}
-          <a class="btn btn-outline-light" href="{% url 'core:post_login_redirect' %}">Dashboard</a>
+          <div class="dropdown">
+            <button class="btn btn-outline-light dropdown-toggle w-100" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+              <i class="bi bi-person-circle me-1"></i>Welcome, {{ request.user.full_name|default:request.user.email }}
+            </button>
+            <ul class="dropdown-menu dropdown-menu-end dropdown-menu-dark">
+              <li><a class="dropdown-item" href="{% url 'core:post_login_redirect' %}"><i class="bi bi-speedometer2 me-2"></i>Dashboard</a></li>
+              <li><a class="dropdown-item" href="{% url 'accounts:profile' %}"><i class="bi bi-person me-2"></i>Profile</a></li>
+              <li><hr class="dropdown-divider"></li>
+              <li>
+                <form method="post" action="{% url 'accounts:logout' %}" class="px-3 py-1">
+                  {% csrf_token %}
+                  <button type="submit" class="dropdown-item ps-0"><i class="bi bi-box-arrow-right me-2"></i>Logout</button>
+                </form>
+              </li>
+            </ul>
+          </div>
           {% else %}
           <a class="btn btn-outline-light" href="{% url 'accounts:login' %}">Login</a>
+          <a class="btn btn-outline-light" href="{% url 'accounts:register' %}">Register</a>
+          {% include "includes/waitlist_button.html" with css_class="btn-cda-primary" %}
           {% endif %}
         </div>
       </div>

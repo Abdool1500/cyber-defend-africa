@@ -1,9 +1,37 @@
 import io
 from unittest.mock import patch
 
+from django.contrib import messages
+from django.contrib.auth import get_user_model
 from django.test import TestCase, override_settings
+from django.urls import reverse
 
 from apps.core.services import storage
+
+User = get_user_model()
+
+
+class MessageToastRenderingTests(TestCase):
+    """Regression coverage for the flat-alert -> Bootstrap toast switch:
+    the message must actually render inside a .toast element, and error
+    messages (tag "error") must map to a real Bootstrap color class since
+    Bootstrap 5 has no .text-bg-error."""
+
+    def test_success_message_renders_in_toast_container(self):
+        response = self.client.post(reverse("accounts:register"), {
+            "first_name": "Toast", "last_name": "Tester", "email": "toasttest@example.com",
+            "phone": "+2348011112222", "country": "Nigeria",
+            "password1": "SuperSecret123!", "password2": "SuperSecret123!", "agree_terms": "on",
+        }, follow=True)
+        self.assertContains(response, "toast-container")
+        self.assertContains(response, "text-bg-success")
+
+    def test_error_tag_maps_to_bootstrap_danger_class(self):
+        """Bootstrap 5 has no .text-bg-error class, so Django's default
+        "error" tag (from messages.error()) must be remapped — otherwise
+        error toasts would render with no background color at all."""
+        from django.conf import settings
+        self.assertEqual(settings.MESSAGE_TAGS.get(messages.ERROR), "danger")
 
 
 class StorageValidationTests(TestCase):
