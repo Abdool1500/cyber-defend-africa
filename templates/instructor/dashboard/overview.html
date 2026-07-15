@@ -9,6 +9,40 @@
   <div class="col-md-3"><div class="cda-surface p-3"><div class="text-secondary small">Students</div><div class="h4 mb-0">{{ student_count }}</div></div></div>
   <div class="col-md-3"><div class="cda-surface p-3"><div class="text-secondary small">Pending Quiz Grading</div><div class="h4 mb-0">{{ pending_grading }}</div></div></div>
   <div class="col-md-3"><div class="cda-surface p-3"><div class="text-secondary small">Pending Submissions</div><div class="h4 mb-0">{{ pending_submissions }}</div></div></div>
+  <div class="col-md-3"><div class="cda-surface p-3"><div class="text-secondary small">Pending Lab Grading</div><div class="h4 mb-0">{{ pending_lab_grading }}</div></div></div>
+</div>
+
+<h2 class="h6 mb-3">Engagement &amp; Performance</h2>
+<div class="row g-3 mb-4">
+  <div class="col-md-3"><div class="cda-surface p-3"><div class="text-secondary small">Active This Week</div><div class="h4 mb-0">{{ stats.active_this_week }} / {{ stats.total_students }}</div></div></div>
+  <div class="col-md-3"><div class="cda-surface p-3"><div class="text-secondary small">Avg Quiz Score</div><div class="h4 mb-0">{{ stats.average_quiz_score|default:"—" }}{% if stats.average_quiz_score %}%{% endif %}</div></div></div>
+  <div class="col-md-3"><div class="cda-surface p-3"><div class="text-secondary small">Avg Assignment Score</div><div class="h4 mb-0">{{ stats.average_assignment_score|default:"—" }}{% if stats.average_assignment_score %}%{% endif %}</div></div></div>
+  <div class="col-md-3"><div class="cda-surface p-3"><div class="text-secondary small">Lab Completion Rate</div><div class="h4 mb-0">{{ stats.lab_completion_rate }}%</div></div></div>
+</div>
+<div class="row g-3 mb-4">
+  <div class="col-md-3"><div class="cda-surface p-3"><div class="text-secondary small">Quiz Attempt Rate</div><div class="h4 mb-0">{{ stats.quiz_completion_rate }}%</div></div></div>
+  <div class="col-md-3"><div class="cda-surface p-3"><div class="text-secondary small">Assignment Submission Rate</div><div class="h4 mb-0">{{ stats.assignment_submission_rate }}%</div></div></div>
+  <div class="col-md-3"><div class="cda-surface p-3"><div class="text-secondary small">Avg Feedback Rating</div><div class="h4 mb-0">{{ stats.feedback.average_rating|default:"—" }}{% if stats.feedback.average_rating %}/5{% endif %}</div></div></div>
+  <div class="col-md-3"><div class="cda-surface p-3"><div class="text-secondary small">Feedback NPS</div><div class="h4 mb-0">{{ stats.feedback.nps_score|default:"—" }}</div></div></div>
+</div>
+
+<h2 class="h6 mb-3">Students At Risk</h2>
+<div class="table-responsive cda-surface mb-4">
+  <table class="table table-dark align-middle mb-0">
+    <thead><tr><th>Student</th><th>Course</th><th>Progress</th><th>Avg Score</th></tr></thead>
+    <tbody>
+      {% for row in stats.at_risk_students %}
+      <tr>
+        <td>{{ row.student_name }}</td>
+        <td>{{ row.course_title }}</td>
+        <td>{{ row.progress_percentage }}%</td>
+        <td>{{ row.average_score|default:"—" }}{% if row.average_score %}%{% endif %}</td>
+      </tr>
+      {% empty %}
+      <tr><td colspan="4" class="text-secondary text-center py-4">No students currently flagged as at risk.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
 </div>
 
 <h2 class="h6 mb-3">Quick Access</h2>
@@ -35,6 +69,12 @@
     <a href="{% url 'instructor_quizzes:list' %}" class="cda-surface cda-quick-link p-3 d-block text-center text-decoration-none h-100">
       <i class="bi bi-patch-question fs-3 text-info d-block mb-2"></i>
       <span class="small text-light">Quizzes</span>
+    </a>
+  </div>
+  <div class="col-6 col-md-4 col-lg-2">
+    <a href="{% url 'instructor_labs:list' %}" class="cda-surface cda-quick-link p-3 d-block text-center text-decoration-none h-100">
+      <i class="bi bi-terminal fs-3 text-info d-block mb-2"></i>
+      <span class="small text-light">Practical Labs</span>
     </a>
   </div>
   <div class="col-6 col-md-4 col-lg-2">

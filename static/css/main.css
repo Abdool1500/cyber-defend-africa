@@ -1,4 +1,5 @@
-:root {
+:root,
+[data-bs-theme="dark"] {
   --cda-navy: #060b18;
   --cda-blue: #0b2545;
   --cda-electric: #2563eb;
@@ -7,6 +8,54 @@
   --cda-text: #e6ecf5;
   --cda-muted: #94a3b8;
   --cda-border: rgba(148, 163, 184, 0.18);
+}
+
+/* Light theme: the navbar/footer keep data-bs-theme="dark" set directly
+   on themselves (brand chrome, always dark) — these overrides only
+   affect <main>, which is the part of the page the toggle controls. */
+[data-bs-theme="light"] {
+  --cda-navy: #f3f5f9;
+  --cda-blue: #dbe6fb;
+  --cda-electric: #2563eb;
+  --cda-cyan: #0e7490;
+  --cda-surface: #ffffff;
+  --cda-text: #0f172a;
+  --cda-muted: #64748b;
+  --cda-border: rgba(15, 23, 42, 0.12);
+}
+
+/* .btn-outline-light/.text-light/.link-light/.text-secondary/
+   .border-secondary are all Bootstrap "paint with this literal brand
+   color" utilities (color: rgba(var(--bs-*-rgb), ...)), not semantic
+   tokens — they do NOT adapt to data-bs-theme on their own, unlike
+   --bs-body-bg/--bs-body-color. Used throughout the app on the
+   assumption of a permanently-dark background. Scoped to `main` so the
+   navbar/footer (outside <main>, always dark) are unaffected. */
+[data-bs-theme="light"] main .btn-outline-light {
+  color: var(--cda-text);
+  border-color: var(--cda-border);
+}
+
+[data-bs-theme="light"] main .btn-outline-light:hover {
+  background-color: var(--cda-electric);
+  border-color: var(--cda-electric);
+  color: #fff;
+}
+
+[data-bs-theme="light"] main .text-light {
+  color: var(--cda-text) !important;
+}
+
+[data-bs-theme="light"] main .link-light {
+  color: var(--cda-electric) !important;
+}
+
+[data-bs-theme="light"] main .text-secondary {
+  color: var(--cda-muted) !important;
+}
+
+[data-bs-theme="light"] main .border-secondary {
+  border-color: var(--cda-border) !important;
 }
 
 body {
@@ -27,6 +76,7 @@ a {
 
 .cda-surface {
   background-color: var(--cda-surface);
+  color: var(--cda-text);
   border: 1px solid var(--cda-border);
   border-radius: 0.75rem;
   animation: cda-fade-in-up 0.4s ease both;
@@ -108,6 +158,14 @@ a {
   color: #fff;
   font-weight: 600;
   font-size: 1.25rem;
+  flex-shrink: 0;
+}
+
+.cda-avatar-img {
+  width: 4rem;
+  height: 4rem;
+  border-radius: 50%;
+  object-fit: cover;
   flex-shrink: 0;
 }
 

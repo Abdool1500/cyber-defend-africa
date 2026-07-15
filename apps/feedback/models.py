@@ -16,6 +16,12 @@ class StudentFeedback(models.Model):
     instructor_effectiveness = models.PositiveSmallIntegerField(null=True, blank=True)
     practical_lab_quality = models.PositiveSmallIntegerField()
     platform_experience = models.PositiveSmallIntegerField()
+    difficulty = models.PositiveSmallIntegerField(help_text="1 = Very Easy, 5 = Very Difficult")
+    confidence_before = models.PositiveSmallIntegerField(help_text="1 = Not at all confident, 5 = Very confident")
+    confidence_after = models.PositiveSmallIntegerField(help_text="1 = Not at all confident, 5 = Very confident")
+    nps_score = models.PositiveSmallIntegerField(
+        help_text="0-10: How likely are you to recommend this course to a friend or colleague?"
+    )
     most_helpful = models.TextField(blank=True)
     improvement_suggestions = models.TextField(blank=True)
     additional_comments = models.TextField(blank=True)
@@ -45,6 +51,20 @@ class StudentFeedback(models.Model):
                 check=models.Q(instructor_effectiveness__isnull=True)
                 | models.Q(instructor_effectiveness__gte=1, instructor_effectiveness__lte=5),
                 name="instructor_effectiveness_1_to_5_or_null",
+            ),
+            models.CheckConstraint(
+                check=models.Q(difficulty__gte=1, difficulty__lte=5), name="difficulty_1_to_5"
+            ),
+            models.CheckConstraint(
+                check=models.Q(confidence_before__gte=1, confidence_before__lte=5),
+                name="confidence_before_1_to_5",
+            ),
+            models.CheckConstraint(
+                check=models.Q(confidence_after__gte=1, confidence_after__lte=5),
+                name="confidence_after_1_to_5",
+            ),
+            models.CheckConstraint(
+                check=models.Q(nps_score__gte=0, nps_score__lte=10), name="nps_score_0_to_10"
             ),
         ]
         indexes = [

@@ -10,6 +10,7 @@ from functools import wraps
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from rest_framework.permissions import BasePermission
 
 
 def _role_required(*roles):
@@ -72,6 +73,22 @@ class AdminRequiredMixin(RoleRequiredMixin):
 
 class SuperAdminRequiredMixin(RoleRequiredMixin):
     allowed_roles = ("super_admin",)
+
+
+class IsAdminRole(BasePermission):
+    """DRF-native counterpart to `admin_required` — the decorators/mixins
+    above only work on Django function-/class-based views, not DRF
+    ViewSets/APIViews, which check permission via `has_permission()`
+    instead."""
+
+    def has_permission(self, request, view):
+        user = request.user
+        return bool(
+            user
+            and user.is_authenticated
+            and user.status == user.Status.ACTIVE
+            and user.role in ("admin", "super_admin")
+        )
 
 
 def instructor_assignment_required(course_lookup="course"):

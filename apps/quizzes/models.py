@@ -10,6 +10,11 @@ class Quiz(models.Model):
         PUBLISHED = "published", "Published"
         ARCHIVED = "archived", "Archived"
 
+    class QuizType(models.TextChoices):
+        STANDARD = "standard", "Standard"
+        PRE_TEST = "pre_test", "Pre-Test (Diagnostic)"
+        POST_TEST = "post_test", "Post-Test (Final)"
+
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     course = models.ForeignKey("courses.Course", on_delete=models.CASCADE, related_name="quizzes")
     module = models.ForeignKey(
@@ -19,6 +24,7 @@ class Quiz(models.Model):
     description = models.TextField(blank=True)
     instructions = models.TextField(blank=True)
     status = models.CharField(max_length=20, choices=Status.choices, default=Status.DRAFT)
+    quiz_type = models.CharField(max_length=20, choices=QuizType.choices, default=QuizType.STANDARD)
     time_limit_minutes = models.PositiveIntegerField(null=True, blank=True)
     attempt_limit = models.PositiveIntegerField(default=1)
     passing_score = models.PositiveIntegerField(default=70, help_text="Passing score as a percentage.")
@@ -39,6 +45,13 @@ class Quiz(models.Model):
         ordering = ["-updated_at"]
         indexes = [
             models.Index(fields=["course", "status"]),
+        ]
+        constraints = [
+            models.UniqueConstraint(
+                fields=["course", "quiz_type"],
+                condition=models.Q(quiz_type__in=["pre_test", "post_test"]),
+                name="unique_pre_post_test_per_course",
+            ),
         ]
 
     def __str__(self):

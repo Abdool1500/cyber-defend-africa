@@ -1,6 +1,7 @@
 {% extends "student/base.html" %}
 {% block title %}{{ lesson.title }} · {{ course.title }}{% endblock %}
 {% block student_content %}
+{% csrf_token %}
 <p class="text-secondary small mb-1"><a href="{% url 'student_learning:course_overview' course.id %}" class="link-light">&larr; {{ course.title }}</a></p>
 <h1 class="h4 mb-3">{{ lesson.title }}</h1>
 
@@ -22,4 +23,25 @@
   <form method="post">{% csrf_token %}<button type="submit" class="btn btn-cda-primary">Mark Complete</button></form>
   {% endif %}
 </div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+  (function () {
+    const csrfToken = document.querySelector("[name=csrfmiddlewaretoken]").value;
+    const heartbeatUrl = "{% url 'student_learning:lesson_heartbeat' course.id lesson.id %}";
+    const INTERVAL_SECONDS = 60;
+
+    function sendHeartbeat() {
+      if (document.visibilityState !== "visible") return;
+      fetch(heartbeatUrl, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "X-CSRFToken": csrfToken },
+        body: JSON.stringify({ seconds: INTERVAL_SECONDS }),
+      }).catch(() => {});
+    }
+
+    setInterval(sendHeartbeat, INTERVAL_SECONDS * 1000);
+  })();
+</script>
 {% endblock %}

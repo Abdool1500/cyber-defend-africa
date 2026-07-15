@@ -40,11 +40,21 @@ class FeedbackWorkflowTests(TestCase):
     def _valid_payload(self, **overrides):
         payload = {
             "overall_rating": "5", "content_quality": "4", "practical_lab_quality": "5",
-            "platform_experience": "4", "most_helpful": "Labs", "improvement_suggestions": "",
-            "additional_comments": "",
+            "platform_experience": "4", "difficulty": "3", "confidence_before": "2",
+            "confidence_after": "5", "nps_score": "9", "most_helpful": "Labs",
+            "improvement_suggestions": "", "additional_comments": "",
         }
         payload.update(overrides)
         return payload
+
+    def _valid_model_kwargs(self, **overrides):
+        kwargs = {
+            "overall_rating": 5, "content_quality": 5, "practical_lab_quality": 5,
+            "platform_experience": 5, "difficulty": 3, "confidence_before": 2,
+            "confidence_after": 5, "nps_score": 9,
+        }
+        kwargs.update(overrides)
+        return kwargs
 
     def test_only_enrolled_courses_are_eligible(self):
         self.client.login(username="student@example.com", password="pass1234")
@@ -63,8 +73,8 @@ class FeedbackWorkflowTests(TestCase):
         with self.assertRaises(IntegrityError):
             with transaction.atomic():
                 StudentFeedback.objects.create(
-                    student=self.student, course=self.course, overall_rating=6,
-                    content_quality=3, practical_lab_quality=3, platform_experience=3,
+                    student=self.student, course=self.course,
+                    **self._valid_model_kwargs(overall_rating=6),
                 )
 
     def test_duplicate_feedback_is_blocked(self):
@@ -84,8 +94,7 @@ class FeedbackWorkflowTests(TestCase):
 
     def test_anonymous_feedback_hides_identity_in_instructor_view(self):
         StudentFeedback.objects.create(
-            student=self.student, course=self.course, overall_rating=5, content_quality=5,
-            practical_lab_quality=5, platform_experience=5, is_anonymous=True,
+            student=self.student, course=self.course, is_anonymous=True, **self._valid_model_kwargs(),
         )
         self.client.login(username="instructor@example.com", password="pass1234")
         response = self.client.get(reverse("instructor_feedback:list"))
@@ -94,8 +103,7 @@ class FeedbackWorkflowTests(TestCase):
 
     def test_anonymous_feedback_hides_identity_in_csv_export(self):
         StudentFeedback.objects.create(
-            student=self.student, course=self.course, overall_rating=5, content_quality=5,
-            practical_lab_quality=5, platform_experience=5, is_anonymous=True,
+            student=self.student, course=self.course, is_anonymous=True, **self._valid_model_kwargs(),
         )
         self.client.login(username="instructor@example.com", password="pass1234")
         response = self.client.get(reverse("instructor_feedback:export_csv"))
@@ -105,8 +113,7 @@ class FeedbackWorkflowTests(TestCase):
 
     def test_instructor_cannot_see_feedback_for_unassigned_course(self):
         StudentFeedback.objects.create(
-            student=self.student, course=self.course, overall_rating=5, content_quality=5,
-            practical_lab_quality=5, platform_experience=5,
+            student=self.student, course=self.course, **self._valid_model_kwargs(),
         )
         self.client.login(username="other_instructor@example.com", password="pass1234")
         response = self.client.get(reverse("instructor_feedback:list"))

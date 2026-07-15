@@ -41,6 +41,8 @@ urlpatterns = [
     path("student/feedback/", include("apps.feedback.student_urls")),
     path("student/certificates/", include("apps.certificates.student_urls")),
     path("student/notifications/", include("apps.notifications.urls")),
+    path("student/labs/", include("apps.labs.student_urls")),
+    path("student/employment/", include("apps.employment.student_urls")),
 
     # Instructor dashboard
     path("instructor/", include("apps.core.dashboard_instructor_urls")),
@@ -49,10 +51,13 @@ urlpatterns = [
     path("instructor/grading/", include("apps.quizzes.instructor_grading_urls")),
     path("instructor/assignments/", include("apps.assignments.instructor_urls")),
     path("instructor/feedback/", include("apps.feedback.instructor_urls")),
+    path("instructor/labs/", include("apps.labs.instructor_urls")),
 
     # Management dashboard
     path("management/", include("apps.core.dashboard_management_urls")),
     path("management/reports/", include("apps.reports.urls")),
+    path("management/cohorts/", include("apps.cohorts.management_urls")),
+    path("management/employment/", include("apps.employment.management_urls")),
 
     # REST API
     path("api/v1/", include("apps.core.api_urls")),

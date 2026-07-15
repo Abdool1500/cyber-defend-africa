@@ -5,7 +5,11 @@
 <div class="container py-5" style="max-width: 560px;">
   <div class="cda-surface p-4 p-md-5">
     <div class="d-flex align-items-center gap-3 mb-4">
+      {% if avatar_url %}
+      <img src="{{ avatar_url }}" alt="{{ user.full_name }}" class="cda-avatar-img">
+      {% else %}
       <div class="cda-avatar">{{ user.full_name|initials }}</div>
+      {% endif %}
       <div>
         <h1 class="h4 mb-1">{{ user.full_name }}</h1>
         <span class="badge text-bg-info">{{ user.get_role_display }}</span>
@@ -16,12 +20,15 @@
     <hr class="border-secondary">
 
     <h2 class="h6 text-secondary text-uppercase mt-4 mb-3">Edit Profile</h2>
-    <form method="post" novalidate>
+    <form method="post" enctype="multipart/form-data" novalidate>
       {% csrf_token %}
       {% for field in form %}
       <div class="mb-3">
         <label class="form-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
         {{ field }}
+        {% if field.help_text %}
+        <div class="form-text">{{ field.help_text }}</div>
+        {% endif %}
         {% for error in field.errors %}
         <div class="text-danger small mt-1">{{ error }}</div>
         {% endfor %}

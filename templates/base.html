@@ -2,6 +2,12 @@
 <!DOCTYPE html>
 <html lang="en" data-bs-theme="dark">
 <head>
+  <script>
+    (function () {
+      var stored = localStorage.getItem("cda-theme");
+      document.documentElement.setAttribute("data-bs-theme", stored === "light" ? "light" : "dark");
+    })();
+  </script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>{% block title %}Cyber Defend Africa{% endblock %}</title>

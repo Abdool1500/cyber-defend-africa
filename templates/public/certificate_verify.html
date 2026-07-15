@@ -5,11 +5,17 @@
   <h1 class="h4 mb-4">Certificate Verification</h1>
   {% if certificate and certificate.status == 'issued' %}
   <div class="cda-surface p-4">
-    <span class="badge text-bg-success mb-2">Valid Certificate</span>
+    <div class="d-flex justify-content-between align-items-start mb-3">
+      <span class="badge text-bg-success">Valid Certificate</span>
+      <img src="{% url 'certificates:qr_code' certificate.verification_code %}" alt="Verification QR code" width="96" height="96">
+    </div>
     <p class="mb-1"><strong>Certificate Number:</strong> {{ certificate.certificate_number }}</p>
     <p class="mb-1"><strong>Recipient:</strong> {{ certificate.student.full_name }}</p>
     <p class="mb-1"><strong>Course:</strong> {{ certificate.course.title }}</p>
-    <p class="mb-0"><strong>Issued:</strong> {{ certificate.issued_at|date:"Y-m-d" }}</p>
+    <p class="mb-1"><strong>Completion Date:</strong> {{ certificate.issued_at|date:"Y-m-d" }}</p>
+    <p class="mb-1"><strong>Instructor:</strong> {{ instructor_names|default:"—" }}</p>
+    <p class="mb-1"><strong>Verification URL:</strong> <a href="{{ verification_url }}">{{ verification_url }}</a></p>
+    <p class="mb-0 text-secondary small text-break"><strong>Certificate Hash:</strong> {{ certificate.certificate_hash }}</p>
   </div>
   {% elif certificate %}
   <div class="alert alert-warning">This certificate has been revoked and is no longer valid.</div>

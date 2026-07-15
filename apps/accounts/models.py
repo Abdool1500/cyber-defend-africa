@@ -47,6 +47,12 @@ class User(AbstractBaseUser, PermissionsMixin):
         SUSPENDED = "suspended", "Suspended"
         PENDING = "pending", "Pending"
 
+    class Gender(models.TextChoices):
+        FEMALE = "female", "Female"
+        MALE = "male", "Male"
+        OTHER = "other", "Other"
+        PREFER_NOT_TO_SAY = "prefer_not_to_say", "Prefer not to say"
+
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     email = models.EmailField(unique=True)
     full_name = models.CharField(max_length=150)
@@ -56,6 +62,11 @@ class User(AbstractBaseUser, PermissionsMixin):
     phone = models.CharField(max_length=32, null=True, blank=True)
     country = models.CharField(max_length=100, null=True, blank=True)
     bio = models.TextField(null=True, blank=True)
+    # Optional, self-reported, profile-only (never on the registration
+    # form) — feeds the "Women trained"/"Youth trained" Impact Dashboard
+    # KPIs. Never required.
+    gender = models.CharField(max_length=20, choices=Gender.choices, null=True, blank=True)
+    date_of_birth = models.DateField(null=True, blank=True)
 
     is_staff = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)

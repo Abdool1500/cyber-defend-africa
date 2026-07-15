@@ -1,0 +1,28 @@
+{% extends "instructor/base.html" %}
+{% block title %}Progress · {{ lab.title }}{% endblock %}
+{% block instructor_content %}
+<h1 class="h4 mb-1">Progress — {{ lab.title }}</h1>
+<p class="text-secondary small mb-4">{{ lab.course.title }} · Max {{ lab.max_score }} points</p>
+<div class="table-responsive cda-surface">
+  <table class="table table-dark table-hover align-middle mb-0">
+    <thead><tr><th>Student</th><th>Started</th><th>Status</th><th>Attempts</th><th>Score</th><th></th></tr></thead>
+    <tbody>
+      {% for progress in progress_records %}
+      <tr>
+        <td>{{ progress.student.full_name }}</td>
+        <td>{{ progress.started_at|date:"Y-m-d H:i" }}</td>
+        <td>
+          {% if progress.status == 'completed' %}<span class="badge text-bg-success">Completed</span>
+          {% else %}<span class="badge text-bg-warning">In Progress</span>{% endif %}
+        </td>
+        <td>{{ progress.attempts }}</td>
+        <td>{% if progress.is_graded %}{{ progress.score }} / {{ lab.max_score }}{% else %}—{% endif %}</td>
+        <td><a href="{% url 'instructor_labs:grade' lab.id progress.id %}" class="btn btn-sm btn-outline-light">Grade</a></td>
+      </tr>
+      {% empty %}
+      <tr><td colspan="6" class="text-secondary text-center py-4">No students have started this lab yet.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

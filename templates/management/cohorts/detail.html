@@ -1,0 +1,40 @@
+{% extends "management/base.html" %}
+{% block title %}{{ cohort.name }} · Cohorts{% endblock %}
+{% block management_content %}
+<div class="d-flex justify-content-between align-items-center mb-1">
+  <h1 class="h4 mb-0">{{ cohort.name }}</h1>
+  <a href="{% url 'admin:cohorts_cohort_change' cohort.id %}" class="btn btn-outline-light btn-sm">Manage Membership (Admin)</a>
+</div>
+<p class="text-secondary small mb-4">
+  {% if cohort.start_date %}{{ cohort.start_date }} – {{ cohort.end_date|default:"ongoing" }}{% endif %}
+  {% if cohort.description %} · {{ cohort.description }}{% endif %}
+</p>
+
+<div class="row g-3 mb-4">
+  <div class="col-6 col-md-3"><div class="cda-surface p-3"><div class="text-secondary small">Members</div><div class="h4 mb-0">{{ stats.member_count }}</div></div></div>
+  <div class="col-6 col-md-3"><div class="cda-surface p-3"><div class="text-secondary small">Enrollments</div><div class="h4 mb-0">{{ stats.total_enrollments }}</div></div></div>
+  <div class="col-6 col-md-3"><div class="cda-surface p-3"><div class="text-secondary small">Completion Rate</div><div class="h4 mb-0">{{ stats.completion_rate }}%</div></div></div>
+  <div class="col-6 col-md-3"><div class="cda-surface p-3"><div class="text-secondary small">Dropout Rate</div><div class="h4 mb-0">{{ stats.dropout_rate }}%</div></div></div>
+  <div class="col-6 col-md-3"><div class="cda-surface p-3"><div class="text-secondary small">Avg Quiz Score</div><div class="h4 mb-0">{% if stats.average_score != None %}{{ stats.average_score }}%{% else %}—{% endif %}</div></div></div>
+  <div class="col-6 col-md-3"><div class="cda-surface p-3"><div class="text-secondary small">Avg Improvement</div><div class="h4 mb-0">{% if stats.average_improvement != None %}{% if stats.average_improvement >= 0 %}+{% endif %}{{ stats.average_improvement }}%{% else %}—{% endif %}</div></div></div>
+  <div class="col-6 col-md-3"><div class="cda-surface p-3"><div class="text-secondary small">Certificates Earned</div><div class="h4 mb-0">{{ stats.certificates_earned }}</div></div></div>
+</div>
+
+<h2 class="h6 mb-3">Members</h2>
+<div class="table-responsive cda-surface">
+  <table class="table table-dark table-hover align-middle mb-0">
+    <thead><tr><th>Student</th><th>Email</th><th>Joined</th></tr></thead>
+    <tbody>
+      {% for membership in members %}
+      <tr>
+        <td>{{ membership.student.full_name }}</td>
+        <td>{{ membership.student.email }}</td>
+        <td>{{ membership.joined_at|date:"Y-m-d" }}</td>
+      </tr>
+      {% empty %}
+      <tr><td colspan="3" class="text-secondary text-center py-4">No members in this cohort yet.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

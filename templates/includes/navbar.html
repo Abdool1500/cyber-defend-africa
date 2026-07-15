@@ -1,4 +1,4 @@
-<nav class="navbar navbar-expand-lg navbar-dark cda-navbar sticky-top">
+<nav class="navbar navbar-expand-lg navbar-dark cda-navbar sticky-top" data-bs-theme="dark">
   <div class="container">
     <a class="navbar-brand fw-semibold" href="{% url 'core:home' %}">Cyber Defend Africa</a>
     <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#mainNav" aria-controls="mainNav" aria-label="Toggle navigation">
@@ -20,6 +20,9 @@
           <li class="nav-item"><a class="nav-link" href="{% url 'leads:contact' %}">Contact</a></li>
         </ul>
         <div class="d-flex flex-column flex-lg-row gap-2 align-items-lg-center">
+          <button type="button" class="btn btn-outline-light theme-toggle-btn" title="Toggle light/dark theme" aria-label="Toggle light/dark theme">
+            <i class="theme-toggle-icon bi bi-sun-fill"></i>
+          </button>
           {% if request.user.is_authenticated %}
           <div class="dropdown">
             <button class="btn btn-outline-light dropdown-toggle w-100" type="button" data-bs-toggle="dropdown" aria-expanded="false">

@@ -2,7 +2,63 @@
 {% block title %}Reports · Management{% endblock %}
 {% block management_content %}
 <h1 class="h4 mb-4">Reports</h1>
+<div class="cda-surface p-3 mb-3 d-flex justify-content-between align-items-center">
+  <p class="mb-0">Analytics Dashboard — DAU/MAU, completion, retention, top courses/instructors, and more.</p>
+  <a href="{% url 'reports:analytics_dashboard' %}" class="btn btn-cda-primary btn-sm">Open Dashboard</a>
+</div>
+<div class="cda-surface p-3 mb-3 d-flex justify-content-between align-items-center">
+  <p class="mb-0">Impact Dashboard — measured platform impact plus self-reported field figures.</p>
+  <a href="{% url 'reports:impact_dashboard' %}" class="btn btn-cda-primary btn-sm">Open Dashboard</a>
+</div>
+
+<div class="cda-surface p-3 mb-4">
+  <p class="mb-2 fw-semibold">Impact Evidence Report</p>
+  <p class="text-secondary small mb-3">A funder-ready rollup combining Reach, Learning Outcomes, Employment Outcomes, Field Impact, Cohort Breakdown, and Top Courses into one document.</p>
+  <form method="get" action="{% url 'reports:export_fid_pdf' %}" class="row g-2 align-items-end">
+    <div class="col-md-6">
+      <label for="fid-prepared-for" class="form-label small text-secondary mb-1">Prepared for (optional)</label>
+      <input type="text" id="fid-prepared-for" name="prepared_for" class="form-control form-control-sm" placeholder="e.g. Funder or Program Name">
+    </div>
+    <div class="col-md-6">
+      <button type="submit" class="btn btn-cda-primary btn-sm">Download PDF</button>
+      <button type="submit" formaction="{% url 'reports:export_fid_excel' %}" class="btn btn-outline-light btn-sm">Download Excel</button>
+    </div>
+  </form>
+</div>
+
 <div class="row g-3">
+  <div class="col-md-4">
+    <div class="cda-surface p-3">
+      <p class="mb-2">Impact Report</p>
+      <a href="{% url 'reports:export_impact_csv' %}" class="btn btn-outline-light btn-sm">CSV</a>
+      <a href="{% url 'reports:export_impact_excel' %}" class="btn btn-outline-light btn-sm">Excel</a>
+      <a href="{% url 'reports:export_impact_pdf' %}" class="btn btn-outline-light btn-sm">PDF</a>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="cda-surface p-3">
+      <p class="mb-2">Course Report</p>
+      <a href="{% url 'reports:export_course_csv' %}" class="btn btn-outline-light btn-sm">CSV</a>
+      <a href="{% url 'reports:export_course_excel' %}" class="btn btn-outline-light btn-sm">Excel</a>
+      <a href="{% url 'reports:export_course_pdf' %}" class="btn btn-outline-light btn-sm">PDF</a>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="cda-surface p-3">
+      <p class="mb-2">Student Report</p>
+      <a href="{% url 'reports:export_student_csv' %}" class="btn btn-outline-light btn-sm">CSV</a>
+      <a href="{% url 'reports:export_student_excel' %}" class="btn btn-outline-light btn-sm">Excel</a>
+      <a href="{% url 'reports:export_student_pdf' %}" class="btn btn-outline-light btn-sm">PDF</a>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="cda-surface p-3">
+      <p class="mb-2">Employment Report</p>
+      <a href="{% url 'reports:export_employment_csv' %}" class="btn btn-outline-light btn-sm">CSV</a>
+      <a href="{% url 'reports:export_employment_excel' %}" class="btn btn-outline-light btn-sm">Excel</a>
+      <a href="{% url 'reports:export_employment_pdf' %}" class="btn btn-outline-light btn-sm">PDF</a>
+    </div>
+  </div>
   <div class="col-md-4">
     <div class="cda-surface p-3">
       <p class="mb-2">Enrollment Report</p>

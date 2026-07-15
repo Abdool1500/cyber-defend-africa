@@ -3,11 +3,24 @@
 {% block instructor_content %}
 <h1 class="h4 mb-4">Feedback Analytics</h1>
 
-<div class="row g-3 mb-4">
+<div class="row g-3 mb-3">
   <div class="col-md-3"><div class="cda-surface p-3"><div class="text-secondary small">Avg Overall</div><div class="h4 mb-0">{{ summary.avg_overall|floatformat:1|default:"—" }}</div></div></div>
   <div class="col-md-3"><div class="cda-surface p-3"><div class="text-secondary small">Avg Content Quality</div><div class="h4 mb-0">{{ summary.avg_content|floatformat:1|default:"—" }}</div></div></div>
   <div class="col-md-3"><div class="cda-surface p-3"><div class="text-secondary small">Avg Lab Quality</div><div class="h4 mb-0">{{ summary.avg_lab|floatformat:1|default:"—" }}</div></div></div>
   <div class="col-md-3"><div class="cda-surface p-3"><div class="text-secondary small">Avg Platform Experience</div><div class="h4 mb-0">{{ summary.avg_platform|floatformat:1|default:"—" }}</div></div></div>
+</div>
+
+<div class="row g-3 mb-4">
+  <div class="col-md-3"><div class="cda-surface p-3"><div class="text-secondary small">Avg Difficulty</div><div class="h4 mb-0">{{ summary.avg_difficulty|floatformat:1|default:"—" }}</div></div></div>
+  <div class="col-md-3"><div class="cda-surface p-3"><div class="text-secondary small">Avg Confidence Before</div><div class="h4 mb-0">{{ summary.avg_confidence_before|floatformat:1|default:"—" }}</div></div></div>
+  <div class="col-md-3"><div class="cda-surface p-3"><div class="text-secondary small">Avg Confidence After</div><div class="h4 mb-0">{{ summary.avg_confidence_after|floatformat:1|default:"—" }}</div></div></div>
+  <div class="col-md-3">
+    <div class="cda-surface p-3">
+      <div class="text-secondary small">Net Promoter Score</div>
+      <div class="h4 mb-0">{{ nps.nps_score|default:"—" }}</div>
+      <div class="text-secondary small">{{ nps.total_responses }} response{{ nps.total_responses|pluralize }} · {{ nps.promoters }} promoters / {{ nps.passives }} passives / {{ nps.detractors }} detractors</div>
+    </div>
+  </div>
 </div>
 
 <h2 class="h6 mb-3">By Course</h2>

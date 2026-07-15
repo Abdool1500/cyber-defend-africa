@@ -1,0 +1,29 @@
+{% extends "student/base.html" %}
+{% block title %}Employment Outcomes · Student{% endblock %}
+{% block student_content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <h1 class="h4 mb-0">Employment Outcomes</h1>
+  <a href="{% url 'student_employment:create' %}" class="btn btn-cda-primary">Add Update</a>
+</div>
+<p class="text-secondary small mb-4">Help us understand our graduates' career outcomes — add a new update any time your status changes (new job, promotion, freelance work, etc). Only you and Cyber Defend Africa's management team can see this.</p>
+
+<div class="cda-surface">
+  <ul class="list-group list-group-flush">
+    {% for outcome in outcomes %}
+    <li class="list-group-item bg-transparent text-light">
+      <div class="d-flex justify-content-between align-items-start">
+        <div>
+          <span class="badge text-bg-info mb-1">{{ outcome.get_status_display }}</span>
+          {% if outcome.employer %}<p class="mb-0 fw-semibold">{{ outcome.job_title }} at {{ outcome.employer }}</p>{% endif %}
+          {% if outcome.country %}<p class="text-secondary small mb-0">{{ outcome.country }}</p>{% endif %}
+          {% if outcome.how_academy_helped %}<p class="text-secondary small mb-0 mt-1">{{ outcome.how_academy_helped }}</p>{% endif %}
+        </div>
+        <span class="text-secondary small text-nowrap ms-3">{{ outcome.created_at|date:"Y-m-d" }}</span>
+      </div>
+    </li>
+    {% empty %}
+    <li class="list-group-item bg-transparent text-secondary">No updates yet — add one once you graduate or your career status changes.</li>
+    {% endfor %}
+  </ul>
+</div>
+{% endblock %}

@@ -1,0 +1,162 @@
+{% extends "management/base.html" %}
+{% block title %}Analytics Dashboard · Management{% endblock %}
+{% block management_content %}
+<h1 class="h4 mb-1">Analytics Dashboard</h1>
+<p class="text-secondary mb-4">Platform-wide learning and impact metrics, computed live from current data.</p>
+
+<h2 class="h6 mb-3">Engagement</h2>
+<div class="row g-3 mb-4">
+  <div class="col-md-3"><div class="cda-surface p-3"><div class="text-secondary small">Daily Active Users</div><div class="h4 mb-0">{{ analytics.dau }}</div></div></div>
+  <div class="col-md-3"><div class="cda-surface p-3"><div class="text-secondary small">Monthly Active Users</div><div class="h4 mb-0">{{ analytics.mau }}</div></div></div>
+  <div class="col-md-3"><div class="cda-surface p-3"><div class="text-secondary small">Total Learning Hours</div><div class="h4 mb-0">{{ analytics.total_learning_hours }}</div></div></div>
+  <div class="col-md-3"><div class="cda-surface p-3"><div class="text-secondary small">Net Promoter Score</div><div class="h4 mb-0">{{ analytics.nps.nps_score|default:"—" }}</div></div></div>
+</div>
+
+<h2 class="h6 mb-3">Enrollment &amp; Outcomes</h2>
+<div class="row g-3 mb-4">
+  <div class="col-md-3"><div class="cda-surface p-3"><div class="text-secondary small">Total Enrollments</div><div class="h4 mb-0">{{ analytics.total_enrollments }}</div></div></div>
+  <div class="col-md-3"><div class="cda-surface p-3"><div class="text-secondary small">Completion Rate</div><div class="h4 mb-0">{{ analytics.completion_rate }}%</div></div></div>
+  <div class="col-md-3"><div class="cda-surface p-3"><div class="text-secondary small">Retention Rate</div><div class="h4 mb-0">{{ analytics.retention_rate }}%</div></div></div>
+  <div class="col-md-3"><div class="cda-surface p-3"><div class="text-secondary small">Dropout Rate</div><div class="h4 mb-0">{{ analytics.dropout_rate }}%</div></div></div>
+</div>
+
+<div class="row g-3 mb-4">
+  <div class="col-md-3"><div class="cda-surface p-3"><div class="text-secondary small">Avg Quiz Score</div><div class="h4 mb-0">{{ analytics.average_score|default:"—" }}{% if analytics.average_score %}%{% endif %}</div></div></div>
+  <div class="col-md-3"><div class="cda-surface p-3"><div class="text-secondary small">Avg Skill Improvement</div><div class="h4 mb-0">{{ analytics.avg_skill_improvement|default:"—" }}{% if analytics.avg_skill_improvement %}%{% endif %}</div></div></div>
+  <div class="col-md-3"><div class="cda-surface p-3"><div class="text-secondary small">Certificates Issued</div><div class="h4 mb-0">{{ analytics.certificates_issued }}</div></div></div>
+  <div class="col-md-3"><div class="cda-surface p-3"><div class="text-secondary small">Employment Rate</div><div class="h4 mb-0">{{ analytics.employment.employment_rate }}%</div></div></div>
+</div>
+
+<div class="row g-3 mb-4">
+  <div class="col-lg-6">
+    <div class="cda-surface p-3 h-100">
+      <p class="text-secondary small mb-2">Enrollment Health</p>
+      <canvas id="enrollmentHealthChart" height="220" aria-label="Completed vs dropped out vs other enrollments" role="img"></canvas>
+    </div>
+  </div>
+  <div class="col-lg-6">
+    <div class="cda-surface p-3 h-100">
+      <p class="text-secondary small mb-2">Average Pre-Test vs Post-Test Score</p>
+      <canvas id="skillImprovementChart" height="220" aria-label="Platform-wide average pre-test vs post-test score" role="img"></canvas>
+    </div>
+  </div>
+</div>
+
+<div class="row g-3 mb-4">
+  <div class="col-lg-6">
+    <div class="cda-surface p-3 h-100">
+      <p class="text-secondary small mb-2">Top Courses by Enrollment</p>
+      <canvas id="topCoursesChart" height="220" aria-label="Top courses by enrollment count" role="img"></canvas>
+    </div>
+  </div>
+  <div class="col-lg-6">
+    <div class="cda-surface p-3 h-100">
+      <p class="text-secondary small mb-2">Top Instructors by Average Rating</p>
+      <canvas id="topInstructorsChart" height="220" aria-label="Top instructors by average feedback rating" role="img"></canvas>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+{{ chart_data|json_script:"analytics-chart-data" }}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+<script>
+  (function () {
+    const data = JSON.parse(document.getElementById("analytics-chart-data").textContent);
+
+    function themeColors() {
+      const isLight = document.documentElement.getAttribute("data-bs-theme") === "light";
+      return {
+        tick: isLight ? "#334155" : "#94a3b8",
+        legend: isLight ? "#0f172a" : "#e6ecf5",
+        grid: isLight ? "rgba(15, 23, 42, 0.08)" : "rgba(148, 163, 184, 0.15)",
+      };
+    }
+
+    const colors = themeColors();
+    const charts = [];
+
+    charts.push(new Chart(document.getElementById("enrollmentHealthChart"), {
+      type: "doughnut",
+      data: {
+        labels: data.enrollment_health.labels,
+        datasets: [{ data: data.enrollment_health.values, backgroundColor: ["#22d3ee", "#f87171", "#64748b"] }],
+      },
+      options: { responsive: true, plugins: { legend: { labels: { color: colors.legend } } } },
+    }));
+
+    charts.push(new Chart(document.getElementById("skillImprovementChart"), {
+      type: "bar",
+      data: {
+        labels: data.skill_improvement.labels,
+        datasets: [{ label: "Average Score", data: data.skill_improvement.values, backgroundColor: ["#64748b", "#22d3ee"] }],
+      },
+      options: {
+        responsive: true,
+        scales: {
+          y: { beginAtZero: true, max: 100, ticks: { color: colors.tick }, grid: { color: colors.grid } },
+          x: { ticks: { color: colors.tick }, grid: { color: colors.grid } },
+        },
+        plugins: { legend: { display: false } },
+      },
+    }));
+
+    charts.push(new Chart(document.getElementById("topCoursesChart"), {
+      type: "bar",
+      data: {
+        labels: data.top_courses.labels,
+        datasets: [{ label: "Enrollments", data: data.top_courses.values, backgroundColor: "#22d3ee" }],
+      },
+      options: {
+        indexAxis: "y",
+        responsive: true,
+        scales: {
+          x: { beginAtZero: true, ticks: { color: colors.tick }, grid: { color: colors.grid } },
+          y: { ticks: { color: colors.tick }, grid: { color: colors.grid } },
+        },
+        plugins: { legend: { display: false } },
+      },
+    }));
+
+    charts.push(new Chart(document.getElementById("topInstructorsChart"), {
+      type: "bar",
+      data: {
+        labels: data.top_instructors.labels,
+        datasets: [{ label: "Avg Rating", data: data.top_instructors.values, backgroundColor: "#facc15" }],
+      },
+      options: {
+        indexAxis: "y",
+        responsive: true,
+        scales: {
+          x: { beginAtZero: true, max: 5, ticks: { color: colors.tick }, grid: { color: colors.grid } },
+          y: { ticks: { color: colors.tick }, grid: { color: colors.grid } },
+        },
+        plugins: { legend: { display: false } },
+      },
+    }));
+
+    // Chart.js renders to <canvas>, which can't pick up theme changes via
+    // CSS alone — re-apply colors when the toggle is used while this page
+    // is open (not just on next page load).
+    document.querySelectorAll(".theme-toggle-btn").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const c = themeColors();
+        charts.forEach((chart) => {
+          if (chart.options.scales) {
+            Object.values(chart.options.scales).forEach((scale) => {
+              if (scale.ticks) scale.ticks.color = c.tick;
+              if (scale.grid) scale.grid.color = c.grid;
+            });
+          }
+          if (chart.options.plugins && chart.options.plugins.legend) {
+            chart.options.plugins.legend.labels = chart.options.plugins.legend.labels || {};
+            chart.options.plugins.legend.labels.color = c.legend;
+          }
+          chart.update();
+        });
+      });
+    });
+  })();
+</script>
+{% endblock %}

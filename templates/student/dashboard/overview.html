@@ -1,14 +1,57 @@
 {% extends "student/base.html" %}
+{% load cda_extras %}
 {% block title %}Dashboard · Student{% endblock %}
 {% block student_content %}
 <h1 class="h4 mb-1">Welcome back, {{ request.user.full_name }}</h1>
 <p class="text-secondary mb-4">Here's what's happening across your courses.</p>
 
-<div class="row g-3 mb-4">
-  <div class="col-md-4"><div class="cda-surface p-3"><div class="text-secondary small">Enrolled Courses</div><div class="h4 mb-0">{{ enrollments|length }}</div></div></div>
-  <div class="col-md-4"><div class="cda-surface p-3"><div class="text-secondary small">Upcoming Quizzes</div><div class="h4 mb-0">{{ upcoming_quizzes|length }}</div></div></div>
-  <div class="col-md-4"><div class="cda-surface p-3"><div class="text-secondary small">Certificates Earned</div><div class="h4 mb-0">{{ certificate_count }}</div></div></div>
+<div class="cda-surface p-3 mb-4">
+  <div class="d-flex justify-content-between align-items-center mb-1">
+    <span class="text-secondary small">Overall Academy Progress</span>
+    <span class="fw-semibold">{{ overall_academy_progress }}%</span>
+  </div>
+  <div class="progress" style="height: 10px;">
+    <div class="progress-bar bg-info" style="width: {{ overall_academy_progress }}%"></div>
+  </div>
 </div>
+
+<div class="row g-3 mb-4">
+  <div class="col-md-3"><div class="cda-surface p-3"><div class="text-secondary small">Enrolled Courses</div><div class="h4 mb-0">{{ enrollments|length }}</div></div></div>
+  <div class="col-md-3"><div class="cda-surface p-3"><div class="text-secondary small">Certificates Earned</div><div class="h4 mb-0">{{ certificate_count }}</div></div></div>
+  <div class="col-md-3">
+    <div class="cda-surface p-3">
+      <div class="text-secondary small">Learning Streak</div>
+      <div class="h4 mb-0">{{ learning_streak.current_streak }} day{{ learning_streak.current_streak|pluralize }}</div>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <div class="cda-surface p-3">
+      <div class="text-secondary small">Leaderboard Position</div>
+      {% if leaderboard.eligible %}
+      <div class="h4 mb-0">Top {{ leaderboard.top_percentage }}%</div>
+      {% else %}
+      <div class="h6 mb-0 text-secondary">Complete a graded quiz to rank</div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+<h2 class="h6 mb-3">My Learning Time</h2>
+<div class="row g-3 mb-4">
+  <div class="col-6 col-md-3"><div class="cda-surface p-3"><div class="text-secondary small">Today</div><div class="h5 mb-0">{{ learning_time.today_seconds|duration_hm }}</div></div></div>
+  <div class="col-6 col-md-3"><div class="cda-surface p-3"><div class="text-secondary small">This Week</div><div class="h5 mb-0">{{ learning_time.week_seconds|duration_hm }}</div></div></div>
+  <div class="col-6 col-md-3"><div class="cda-surface p-3"><div class="text-secondary small">This Month</div><div class="h5 mb-0">{{ learning_time.month_seconds|duration_hm }}</div></div></div>
+  <div class="col-6 col-md-3"><div class="cda-surface p-3"><div class="text-secondary small">Lifetime</div><div class="h5 mb-0">{{ learning_time.lifetime_seconds|duration_hm }}</div></div></div>
+</div>
+
+{% if lab_summary.total %}
+<h2 class="h6 mb-3">My Practical Labs</h2>
+<div class="row g-3 mb-4">
+  <div class="col-4"><div class="cda-surface p-3"><div class="text-secondary small">Not Started</div><div class="h5 mb-0">{{ lab_summary.not_started }}</div></div></div>
+  <div class="col-4"><div class="cda-surface p-3"><div class="text-secondary small">In Progress</div><div class="h5 mb-0">{{ lab_summary.in_progress }}</div></div></div>
+  <div class="col-4"><div class="cda-surface p-3"><div class="text-secondary small">Completed</div><div class="h5 mb-0">{{ lab_summary.completed }}</div></div></div>
+</div>
+{% endif %}
 
 <h2 class="h6 mb-3">Quick Access</h2>
 <div class="row g-3 mb-4">
@@ -22,6 +65,12 @@
     <a href="{% url 'student_assignments:list' %}" class="cda-surface cda-quick-link p-3 d-block text-center text-decoration-none h-100">
       <i class="bi bi-journal-text fs-3 text-info d-block mb-2"></i>
       <span class="small text-light">Assignments</span>
+    </a>
+  </div>
+  <div class="col-6 col-md-4 col-lg-2">
+    <a href="{% url 'student_labs:list' %}" class="cda-surface cda-quick-link p-3 d-block text-center text-decoration-none h-100">
+      <i class="bi bi-terminal fs-3 text-info d-block mb-2"></i>
+      <span class="small text-light">Practical Labs</span>
     </a>
   </div>
   <div class="col-6 col-md-4 col-lg-2">
@@ -43,6 +92,12 @@
     </a>
   </div>
   <div class="col-6 col-md-4 col-lg-2">
+    <a href="{% url 'student_employment:list' %}" class="cda-surface cda-quick-link p-3 d-block text-center text-decoration-none h-100">
+      <i class="bi bi-briefcase fs-3 text-info d-block mb-2"></i>
+      <span class="small text-light">Employment</span>
+    </a>
+  </div>
+  <div class="col-6 col-md-4 col-lg-2">
     <div class="cda-surface p-3 text-center h-100 opacity-50" title="Payments — coming soon">
       <i class="bi bi-credit-card fs-3 text-secondary d-block mb-2"></i>
       <span class="small text-secondary d-block">Payments</span>
@@ -50,6 +105,38 @@
     </div>
   </div>
 </div>
+
+{% if skill_improvements %}
+<h2 class="h6 mb-3">My Skill Improvement</h2>
+<div class="row g-3 mb-4">
+  <div class="col-lg-5">
+    <div class="cda-surface p-3 h-100">
+      <canvas id="skillImprovementChart" height="220" aria-label="Pre-test vs post-test scores per course" role="img"></canvas>
+    </div>
+  </div>
+  <div class="col-lg-7">
+    <div class="table-responsive cda-surface p-3 h-100">
+      <table class="table table-dark table-borderless align-middle mb-0">
+        <thead>
+          <tr><th>Course</th><th>Pre-Test</th><th>Post-Test</th><th>Improvement</th></tr>
+        </thead>
+        <tbody>
+          {% for row in skill_improvements %}
+          <tr>
+            <td>{{ row.course.title }}</td>
+            <td>{{ row.pre_test_percentage }}%</td>
+            <td>{{ row.post_test_percentage }}%</td>
+            <td class="fw-semibold {% if row.improvement >= 0 %}text-success{% else %}text-danger{% endif %}">
+              {% if row.improvement >= 0 %}+{% endif %}{{ row.improvement }}%
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endif %}
 
 <h2 class="h6 mb-3">Continue Learning</h2>
 <div class="row g-3 mb-4">
@@ -69,14 +156,100 @@
   {% endfor %}
 </div>
 
-<h2 class="h6 mb-3">Upcoming Quizzes</h2>
-<ul class="list-group list-group-flush cda-surface">
-  {% for quiz in upcoming_quizzes %}
+<div class="row g-3 mb-4">
+  <div class="col-md-6">
+    <h2 class="h6 mb-3">Upcoming Quizzes</h2>
+    <ul class="list-group list-group-flush cda-surface">
+      {% for quiz in upcoming_quizzes %}
+      <li class="list-group-item bg-transparent text-light d-flex justify-content-between align-items-center">
+        {{ quiz.title }} <a href="{% url 'student_quizzes:detail' quiz.id %}" class="btn btn-sm btn-outline-light">View</a>
+      </li>
+      {% empty %}
+      <li class="list-group-item bg-transparent text-secondary">No upcoming quizzes.</li>
+      {% endfor %}
+    </ul>
+  </div>
+  <div class="col-md-6">
+    <h2 class="h6 mb-3">Upcoming Assignments</h2>
+    <ul class="list-group list-group-flush cda-surface">
+      {% for assignment in upcoming_assignments %}
+      <li class="list-group-item bg-transparent text-light d-flex justify-content-between align-items-center">
+        <span>{{ assignment.title }}{% if assignment.due_at %} <span class="text-secondary small">(due {{ assignment.due_at|date:"Y-m-d" }})</span>{% endif %}</span>
+        <a href="{% url 'student_assignments:detail' assignment.id %}" class="btn btn-sm btn-outline-light">View</a>
+      </li>
+      {% empty %}
+      <li class="list-group-item bg-transparent text-secondary">No upcoming assignments.</li>
+      {% endfor %}
+    </ul>
+  </div>
+</div>
+
+<h2 class="h6 mb-3">Recent Quiz Scores</h2>
+<ul class="list-group list-group-flush cda-surface mb-4">
+  {% for attempt in recent_quiz_attempts %}
   <li class="list-group-item bg-transparent text-light d-flex justify-content-between align-items-center">
-    {{ quiz.title }} <a href="{% url 'student_quizzes:detail' quiz.id %}" class="btn btn-sm btn-outline-light">View</a>
+    {{ attempt.quiz.title }}
+    <span class="fw-semibold {% if attempt.passed %}text-success{% else %}text-danger{% endif %}">{{ attempt.percentage|floatformat:0 }}%</span>
   </li>
   {% empty %}
-  <li class="list-group-item bg-transparent text-secondary">No upcoming quizzes.</li>
+  <li class="list-group-item bg-transparent text-secondary">No graded quiz attempts yet.</li>
   {% endfor %}
 </ul>
+{% endblock %}
+
+{% block extra_scripts %}
+{% if skill_improvements %}
+{{ skill_improvement_chart_data|json_script:"skill-improvement-data" }}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+<script>
+  (function () {
+    const data = JSON.parse(document.getElementById("skill-improvement-data").textContent);
+    const ctx = document.getElementById("skillImprovementChart");
+
+    function themeColors() {
+      const isLight = document.documentElement.getAttribute("data-bs-theme") === "light";
+      return {
+        tick: isLight ? "#334155" : "#94a3b8",
+        legend: isLight ? "#0f172a" : "#e6ecf5",
+        grid: isLight ? "rgba(15, 23, 42, 0.08)" : "rgba(148, 163, 184, 0.15)",
+      };
+    }
+
+    const colors = themeColors();
+    const chart = new Chart(ctx, {
+      type: "bar",
+      data: {
+        labels: data.labels,
+        datasets: [
+          { label: "Pre-Test", data: data.pre, backgroundColor: "#64748b" },
+          { label: "Post-Test", data: data.post, backgroundColor: "#22d3ee" },
+        ],
+      },
+      options: {
+        responsive: true,
+        scales: {
+          y: { beginAtZero: true, max: 100, ticks: { color: colors.tick }, grid: { color: colors.grid } },
+          x: { ticks: { color: colors.tick }, grid: { color: colors.grid } },
+        },
+        plugins: { legend: { labels: { color: colors.legend } } },
+      },
+    });
+
+    // Chart.js renders to a <canvas>, which can't pick up theme changes
+    // via CSS alone — re-apply colors when the toggle is used while this
+    // page is open (not just on next page load).
+    document.querySelectorAll(".theme-toggle-btn").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const c = themeColors();
+        chart.options.scales.y.ticks.color = c.tick;
+        chart.options.scales.y.grid.color = c.grid;
+        chart.options.scales.x.ticks.color = c.tick;
+        chart.options.scales.x.grid.color = c.grid;
+        chart.options.plugins.legend.labels.color = c.legend;
+        chart.update();
+      });
+    });
+  })();
+</script>
+{% endif %}
 {% endblock %}

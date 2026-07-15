@@ -1,0 +1,48 @@
+{% extends "management/base.html" %}
+{% block title %}Impact Dashboard · Management{% endblock %}
+{% block management_content %}
+<div class="d-flex justify-content-between align-items-center mb-1">
+  <h1 class="h4 mb-0">Impact Dashboard</h1>
+  <div>
+    <a href="{% url 'reports:export_impact_csv' %}" class="btn btn-outline-light btn-sm">CSV</a>
+    <a href="{% url 'reports:export_impact_excel' %}" class="btn btn-outline-light btn-sm">Excel</a>
+    <a href="{% url 'reports:export_impact_pdf' %}" class="btn btn-outline-light btn-sm">PDF</a>
+  </div>
+</div>
+<p class="text-secondary mb-4">Combines measured platform data with self-reported field impact figures.</p>
+
+<div class="d-flex align-items-center gap-2 mb-3">
+  <span class="badge text-bg-info">Measured</span>
+  <h2 class="h6 mb-0">Computed From Platform Data</h2>
+</div>
+<div class="row g-3 mb-4">
+  <div class="col-md-3"><div class="cda-surface p-3"><div class="text-secondary small">People Trained</div><div class="h4 mb-0">{{ impact.computed.people_trained }}</div></div></div>
+  <div class="col-md-3"><div class="cda-surface p-3"><div class="text-secondary small">Certificates Issued</div><div class="h4 mb-0">{{ impact.computed.certificates_issued }}</div></div></div>
+  <div class="col-md-3"><div class="cda-surface p-3"><div class="text-secondary small">Total Learning Hours</div><div class="h4 mb-0">{{ impact.computed.total_learning_hours }}</div></div></div>
+  <div class="col-md-3"><div class="cda-surface p-3"><div class="text-secondary small">Labs Completed</div><div class="h4 mb-0">{{ impact.computed.labs_completed }}</div></div></div>
+</div>
+<div class="row g-3 mb-4">
+  <div class="col-md-3"><div class="cda-surface p-3"><div class="text-secondary small">Completion Rate</div><div class="h4 mb-0">{{ impact.computed.completion_rate }}%</div></div></div>
+  <div class="col-md-3"><div class="cda-surface p-3"><div class="text-secondary small">Avg Skill Improvement</div><div class="h4 mb-0">{{ impact.computed.avg_skill_improvement|default:"—" }}{% if impact.computed.avg_skill_improvement %}%{% endif %}</div></div></div>
+  <div class="col-md-3"><div class="cda-surface p-3"><div class="text-secondary small">Employment Rate</div><div class="h4 mb-0">{{ impact.computed.employment_rate }}%</div></div></div>
+  <div class="col-md-3"><div class="cda-surface p-3"><div class="text-secondary small">Net Promoter Score</div><div class="h4 mb-0">{{ impact.computed.nps_score|default:"—" }}</div></div></div>
+</div>
+
+<div class="d-flex align-items-center gap-2 mb-3">
+  <span class="badge text-bg-warning text-dark">Self-Reported</span>
+  <h2 class="h6 mb-0">Field Impact (not derived from LMS data)</h2>
+</div>
+<div class="row g-3 mb-2">
+  <div class="col-md-4"><div class="cda-surface p-3"><div class="text-secondary small">SMEs Protected</div><div class="h4 mb-0">{{ impact.self_reported.smes_protected|default:"—" }}</div></div></div>
+  <div class="col-md-4"><div class="cda-surface p-3"><div class="text-secondary small">Healthcare Workers Trained</div><div class="h4 mb-0">{{ impact.self_reported.healthcare_workers_trained|default:"—" }}</div></div></div>
+  <div class="col-md-4"><div class="cda-surface p-3"><div class="text-secondary small">Businesses Started</div><div class="h4 mb-0">{{ impact.self_reported.businesses_started|default:"—" }}</div></div></div>
+</div>
+<p class="text-secondary small">
+  {% if impact.self_reported.as_of %}
+    As of {{ impact.self_reported.as_of|date:"Y-m-d" }}.
+  {% else %}
+    No figures recorded yet.
+  {% endif %}
+  Update these in <a href="{% url 'admin:analytics_impactsnapshot_add' %}">Django Admin</a>.
+</p>
+{% endblock %}

@@ -1,0 +1,28 @@
+{% extends "management/base.html" %}
+{% block title %}Employment Outcomes · Management{% endblock %}
+{% block management_content %}
+<h1 class="h4 mb-1">Employment Outcomes</h1>
+<p class="text-secondary small mb-4">Aggregated from graduate self-reports. Individual records (including salary range and uploaded evidence) are available to admins via Django Admin — never shown here as anything but a bucketed count.</p>
+
+<div class="row g-3 mb-4">
+  <div class="col-md-4"><div class="cda-surface p-3"><div class="text-secondary small">Graduates Reporting</div><div class="h4 mb-0">{{ summary.total_reporting }}</div></div></div>
+  <div class="col-md-4"><div class="cda-surface p-3"><div class="text-secondary small">Currently Employed</div><div class="h4 mb-0">{{ summary.employed_count }}</div></div></div>
+  <div class="col-md-4"><div class="cda-surface p-3"><div class="text-secondary small">Employment Rate</div><div class="h4 mb-0">{{ summary.employment_rate }}%</div></div></div>
+</div>
+
+<h2 class="h6 mb-3">Status Breakdown</h2>
+<div class="table-responsive cda-surface">
+  <table class="table table-dark table-hover align-middle mb-0">
+    <thead><tr><th>Status</th><th>Count</th></tr></thead>
+    <tbody>
+      {% for row in summary.status_breakdown %}
+      <tr><td>{{ row.label }}</td><td>{{ row.count }}</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<div class="cda-surface p-4 mt-4">
+  <a href="{% url 'admin:employment_employmentoutcome_changelist' %}" class="btn btn-outline-light btn-sm">Review Individual Records (Admin)</a>
+</div>
+{% endblock %}

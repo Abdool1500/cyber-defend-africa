@@ -4,6 +4,7 @@ from django.contrib.auth.forms import UserChangeForm as DjangoUserChangeForm
 from django.contrib.auth.forms import UserCreationForm as DjangoUserCreationForm
 
 from apps.core.forms import BootstrapFormMixin
+from apps.core.services import storage
 
 from .models import User
 
@@ -81,9 +82,39 @@ class EmailAuthenticationForm(BootstrapFormMixin, AuthenticationForm):
 
 
 class ProfileForm(BootstrapFormMixin, forms.ModelForm):
+    avatar = forms.ImageField(
+        label="Profile picture", required=False,
+        help_text="PNG, JPEG, or WEBP. Max 20 MB.",
+    )
+
     class Meta:
         model = User
-        fields = ["full_name", "phone", "country", "bio"]
+        fields = ["full_name", "phone", "country", "bio", "gender", "date_of_birth"]
+        widgets = {
+            "date_of_birth": forms.DateInput(attrs={"type": "date"}),
+        }
+        help_texts = {
+            "gender": "Optional — helps us report training impact accurately.",
+            "date_of_birth": "Optional — never shown to other users.",
+        }
+
+    def clean_avatar(self):
+        avatar = self.cleaned_data.get("avatar")
+        if avatar:
+            try:
+                storage.validate_mime_type(avatar.content_type)
+                storage.validate_file_size(avatar.size)
+            except storage.InvalidFileError as exc:
+                raise forms.ValidationError(str(exc))
+        return avatar
+
+    def clean_date_of_birth(self):
+        from django.utils import timezone
+
+        dob = self.cleaned_data.get("date_of_birth")
+        if dob and dob > timezone.now().date():
+            raise forms.ValidationError("Date of birth cannot be in the future.")
+        return dob
 
 
 class AccountPasswordChangeForm(BootstrapFormMixin, forms.Form):

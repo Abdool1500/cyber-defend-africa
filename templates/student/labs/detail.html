@@ -1,0 +1,52 @@
+{% extends "student/base.html" %}
+{% block title %}{{ lab.title }} · Student{% endblock %}
+{% block student_content %}
+<h1 class="h4 mb-1">{{ lab.title }}</h1>
+<p class="text-secondary small mb-4">{{ lab.course.title }} · {{ lab.get_category_display }} · Max {{ lab.max_score }} points</p>
+
+<div class="cda-surface p-4 mb-4">
+  <p>{{ lab.instructions|default:lab.description|linebreaks }}</p>
+</div>
+
+{% if progress %}
+<div class="cda-surface p-4 mb-4">
+  <h2 class="h6">Your Progress</h2>
+  <p class="mb-1">
+    Status:
+    {% if progress.status == 'completed' %}<span class="badge text-bg-success">Completed</span>
+    {% else %}<span class="badge text-bg-warning">In Progress</span>{% endif %}
+  </p>
+  <p class="text-secondary small mb-1">Attempts: {{ progress.attempts }}</p>
+  {% if progress.is_graded %}
+  <p class="h5 mt-3">{{ progress.score }} / {{ lab.max_score }}</p>
+  {% if progress.instructor_feedback %}<p class="text-secondary">{{ progress.instructor_feedback|linebreaks }}</p>{% endif %}
+  {% else %}
+  <p class="text-secondary small mb-0">Awaiting instructor review.</p>
+  {% endif %}
+</div>
+{% endif %}
+
+<div class="cda-surface p-4">
+  {% if not progress %}
+  <form method="post">
+    {% csrf_token %}
+    <input type="hidden" name="action" value="start">
+    <button type="submit" class="btn btn-cda-primary">Start Lab</button>
+  </form>
+  {% elif progress.status == 'in_progress' %}
+  <form method="post">
+    {% csrf_token %}
+    <input type="hidden" name="action" value="complete">
+    <button type="submit" class="btn btn-cda-primary">Mark Complete</button>
+  </form>
+  {% elif lab.allow_resubmission and not progress.is_graded %}
+  <form method="post">
+    {% csrf_token %}
+    <input type="hidden" name="action" value="restart">
+    <button type="submit" class="btn btn-outline-light">Restart Lab</button>
+  </form>
+  {% else %}
+  <p class="text-secondary mb-0">This lab has been graded and can no longer be restarted.</p>
+  {% endif %}
+</div>
+{% endblock %}

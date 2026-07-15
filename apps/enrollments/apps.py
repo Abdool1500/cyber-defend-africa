@@ -6,3 +6,6 @@ class EnrollmentsConfig(AppConfig):
     name = "apps.enrollments"
     label = "enrollments"
     verbose_name = "Enrollments"
+
+    def ready(self):
+        from . import signals  # noqa: F401

@@ -2,8 +2,12 @@ from django.urls import include, path
 from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
 from rest_framework.routers import DefaultRouter
 
+from apps.analytics.api_views import ImpactDashboardAPIView, PlatformAnalyticsAPIView
 from apps.assignments.api_views import AssignmentSubmissionViewSet, AssignmentViewSet
+from apps.certificates.api_views import CertificateViewSet
+from apps.cohorts.api_views import CohortViewSet
 from apps.courses.api_views import CourseViewSet
+from apps.employment.api_views import EmploymentSummaryAPIView
 from apps.enrollments.api_views import EnrollmentViewSet
 from apps.feedback.api_views import StudentFeedbackViewSet
 from apps.notifications.api_views import NotificationViewSet
@@ -22,11 +26,16 @@ router.register("feedback", StudentFeedbackViewSet, basename="api-feedback")
 router.register("notifications", NotificationViewSet, basename="api-notification")
 router.register("resources", ResourcePostViewSet, basename="api-resource")
 router.register("question-bank", QuestionViewSet, basename="api-question-bank")
+router.register("cohorts", CohortViewSet, basename="api-cohort")
+router.register("certificates", CertificateViewSet, basename="api-certificate")
 
 app_name = "api-v1"
 
 urlpatterns = [
     path("", include(router.urls)),
+    path("analytics/", PlatformAnalyticsAPIView.as_view(), name="api-analytics"),
+    path("impact/", ImpactDashboardAPIView.as_view(), name="api-impact"),
+    path("employment/", EmploymentSummaryAPIView.as_view(), name="api-employment"),
     path("schema/", SpectacularAPIView.as_view(), name="schema"),
     path("docs/", SpectacularSwaggerView.as_view(url_name="api-v1:schema"), name="docs"),
 ]

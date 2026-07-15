@@ -12,6 +12,8 @@ from django.contrib.auth.views import (
 from django.shortcuts import redirect, render
 from django.urls import reverse_lazy
 
+from apps.core.services.storage import StorageError, generate_safe_path, get_storage_service
+
 from .forms import (
     AccountPasswordChangeForm,
     EmailAuthenticationForm,
@@ -84,14 +86,44 @@ def password_change(request):
     return render(request, "accounts/password_change.html", {"form": form})
 
 
+def _signed_avatar_url(user):
+    """Private bucket — always regenerate, never cache; signed URLs expire."""
+    if not user.avatar_path:
+        return None
+    try:
+        return get_storage_service().signed_url("avatars", user.avatar_path)
+    except StorageError:
+        return None
+
+
 @login_required
 def profile(request):
     if request.method == "POST":
-        form = ProfileForm(request.POST, instance=request.user)
+        form = ProfileForm(request.POST, request.FILES, instance=request.user)
         if form.is_valid():
-            form.save()
+            user = form.save(commit=False)
+            avatar = form.cleaned_data.get("avatar")
+            if avatar:
+                old_avatar_path = user.avatar_path
+                path = generate_safe_path("avatars", str(user.id), original_filename=avatar.name)
+                try:
+                    get_storage_service().upload("avatars", path, avatar, content_type=avatar.content_type)
+                except StorageError as exc:
+                    messages.error(request, f"Profile picture upload failed: {exc}")
+                    return render(request, "accounts/profile.html", {
+                        "form": form, "avatar_url": _signed_avatar_url(request.user),
+                    })
+                user.avatar_path = path
+                if old_avatar_path:
+                    try:
+                        get_storage_service().delete("avatars", old_avatar_path)
+                    except StorageError:
+                        pass  # best-effort cleanup — the new avatar is already set
+            user.save()
             messages.success(request, "Profile updated.")
             return redirect("accounts:profile")
     else:
         form = ProfileForm(instance=request.user)
-    return render(request, "accounts/profile.html", {"form": form})
+    return render(request, "accounts/profile.html", {
+        "form": form, "avatar_url": _signed_avatar_url(request.user),
+    })

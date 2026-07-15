@@ -9,7 +9,7 @@ class QuizForm(BootstrapFormMixin, forms.ModelForm):
     class Meta:
         model = Quiz
         fields = [
-            "course", "module", "title", "description", "instructions", "status",
+            "course", "module", "title", "description", "instructions", "status", "quiz_type",
             "time_limit_minutes", "attempt_limit", "passing_score",
             "shuffle_questions", "shuffle_options",
             "show_score_after_submission", "show_correct_answers", "show_explanations",

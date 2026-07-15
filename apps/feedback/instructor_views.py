@@ -1,10 +1,11 @@
 import csv
 
-from django.db.models import Avg
+from django.db.models import Avg, Count
 from django.http import HttpResponse
 from django.shortcuts import render
 
 from apps.accounts.permissions import instructor_required
+from apps.analytics.services.nps import calculate_nps
 from apps.instructors.models import InstructorAssignment
 
 from .models import StudentFeedback
@@ -44,6 +45,7 @@ def feedback_list(request):
             "content_quality": f.content_quality,
             "practical_lab_quality": f.practical_lab_quality,
             "platform_experience": f.platform_experience,
+            "nps_score": f.nps_score,
             "most_helpful": f.most_helpful,
             "improvement_suggestions": f.improvement_suggestions,
             "created_at": f.created_at,
@@ -67,13 +69,20 @@ def feedback_analytics(request):
         avg_instructor=Avg("instructor_effectiveness"),
         avg_lab=Avg("practical_lab_quality"),
         avg_platform=Avg("platform_experience"),
+        avg_difficulty=Avg("difficulty"),
+        avg_confidence_before=Avg("confidence_before"),
+        avg_confidence_after=Avg("confidence_after"),
     )
-    from django.db.models import Count
+    nps = calculate_nps(feedback_qs)
 
     per_course = feedback_qs.values("course__title").annotate(
         avg_overall=Avg("overall_rating"), responses=Count("id")
     )
-    return render(request, "instructor/feedback/analytics.html", {"summary": summary, "per_course": per_course})
+    return render(
+        request,
+        "instructor/feedback/analytics.html",
+        {"summary": summary, "nps": nps, "per_course": per_course},
+    )
 
 
 @instructor_required
@@ -84,12 +93,14 @@ def feedback_export_csv(request):
     writer = csv.writer(response)
     writer.writerow([
         "Course", "Respondent", "Overall Rating", "Content Quality", "Lab Quality",
-        "Platform Experience", "Most Helpful", "Improvement Suggestions", "Submitted",
+        "Platform Experience", "Difficulty", "Confidence Before", "Confidence After",
+        "NPS Score", "Most Helpful", "Improvement Suggestions", "Submitted",
     ])
     for f in feedback_qs:
         writer.writerow([
             f.course.title, f.display_name(), f.overall_rating, f.content_quality,
-            f.practical_lab_quality, f.platform_experience, f.most_helpful,
+            f.practical_lab_quality, f.platform_experience, f.difficulty,
+            f.confidence_before, f.confidence_after, f.nps_score, f.most_helpful,
             f.improvement_suggestions, f.created_at.strftime("%Y-%m-%d"),
         ])
     return response

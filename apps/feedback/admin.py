@@ -5,7 +5,7 @@ from .models import StudentFeedback
 
 @admin.register(StudentFeedback)
 class StudentFeedbackAdmin(admin.ModelAdmin):
-    list_display = ["course", "anonymized_student", "overall_rating", "is_anonymous", "created_at"]
+    list_display = ["course", "anonymized_student", "overall_rating", "nps_score", "is_anonymous", "created_at"]
     list_filter = ["is_anonymous", "course"]
     readonly_fields = ["id", "created_at", "updated_at"]
 

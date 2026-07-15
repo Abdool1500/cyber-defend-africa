@@ -53,6 +53,10 @@ INSTALLED_APPS = [
     "apps.leads",
     "apps.reports",
     "apps.audit",
+    "apps.cohorts",
+    "apps.labs",
+    "apps.employment",
+    "apps.analytics",
 ]
 
 MIDDLEWARE = [
@@ -156,6 +160,7 @@ SUPABASE_STORAGE_BUCKETS = {
     "assignment-submissions": {"public": False},
     "resource-assets": {"public": True},
     "certificate-assets": {"public": False},
+    "employment-evidence": {"public": False},
 }
 
 # --- Waitlist / GPT Sentinel -------------------------------------------
